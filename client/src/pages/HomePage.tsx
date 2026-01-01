@@ -1,91 +1,118 @@
-import { useQuery } from "@tanstack/react-query";
-import { Offer } from "@shared/schema";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Search, Share2, WhatsApp } from "lucide-react";
+import { useOffers } from "@/hooks/use-offers";
+import { OfferCard } from "@/components/OfferCard";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Navbar } from "@/components/Navbar";
+import { Search, SlidersHorizontal, Loader2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function HomePage() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const { data: offers, isLoading } = useQuery<Offer[]>({
-    queryKey: ["/api/offers"],
-  });
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("all");
+  const { data: offers, isLoading, error } = useOffers({ search, category });
 
-  const filteredOffers = offers?.filter(offer => 
-    offer.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    offer.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const shareOnWhatsApp = (offer: Offer) => {
-    const text = `شاهد هذا العرض الرائع من صيدات الخليج: ${offer.title} بسعر ${offer.newPrice} ريال بدلاً من ${offer.oldPrice} ريال!`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
-  };
+  const categories = [
+    { id: "all", label: "الكل" },
+    { id: "electronics", label: "إلكترونيات" },
+    { id: "perfumes", label: "عطور" },
+    { id: "fashion", label: "أزياء" },
+    { id: "food", label: "مأكولات" },
+  ];
 
   return (
-    <div className="min-h-screen bg-[#0a192f] text-white dir-rtl" dir="rtl">
-      {/* Hero Section */}
-      <header className="bg-[#0a192f] border-b border-[#d4af37]/20 py-8 px-4 text-center">
-        <h1 className="text-4xl font-bold text-[#d4af37] mb-2 font-cairo">صيدات الخليج</h1>
-        <p className="text-gray-400">وجهتك الأولى لأفضل العروض والخصومات في الخليج</p>
-        
-        <div className="max-w-md mx-auto mt-8 relative">
-          <Search className="absolute right-3 top-3 text-[#d4af37]" />
-          <Input 
-            className="bg-[#112240] border-[#d4af37]/30 text-white pr-10 focus:border-[#d4af37]"
-            placeholder="ابحث عن العروض..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-      </header>
+    <div className="min-h-screen bg-background text-foreground pb-20">
+      <Navbar />
 
-      <main className="container mx-auto py-8 px-4">
+      {/* Hero Section */}
+      <section className="relative py-20 px-4 overflow-hidden">
+        <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[100px]" />
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px]" />
+        </div>
+        
+        <div className="container mx-auto relative z-10 text-center max-w-3xl">
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-4xl md:text-6xl font-black font-heading mb-6 leading-tight"
+          >
+            اكتشف أفضل <span className="text-gold-gradient">العروض الحصرية</span> في الخليج
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-lg md:text-xl text-muted-foreground mb-10 leading-relaxed"
+          >
+            وجهتك الأولى للتوفير. نجمع لك أفضل الخصومات والصفقات المميزة في مكان واحد.
+          </motion.p>
+
+          {/* Search Bar */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="flex gap-2 max-w-xl mx-auto bg-card/50 p-2 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-sm"
+          >
+            <div className="relative flex-1">
+              <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
+              <Input 
+                className="pr-10 bg-transparent border-none h-12 text-lg focus-visible:ring-0 placeholder:text-muted-foreground/50"
+                placeholder="ابحث عن عرض..." 
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+            <Button size="lg" className="h-12 px-8 rounded-xl">بحث</Button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Categories Filter */}
+      <section className="container mx-auto px-4 mb-10">
+        <div className="flex flex-wrap gap-2 justify-center">
+          {categories.map((cat) => (
+            <Button
+              key={cat.id}
+              variant={category === cat.id ? "default" : "outline"}
+              onClick={() => setCategory(cat.id)}
+              className={`rounded-full px-6 transition-all duration-300 ${category === cat.id ? 'shadow-lg shadow-primary/20 scale-105' : 'bg-card border-white/5 hover:border-primary/50'}`}
+            >
+              {cat.label}
+            </Button>
+          ))}
+        </div>
+      </section>
+
+      {/* Offers Grid */}
+      <section className="container mx-auto px-4">
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map(i => (
-              <Card key={i} className="bg-[#112240] border-[#d4af37]/10 animate-pulse h-96" />
-            ))}
+          <div className="flex justify-center items-center py-20">
+            <Loader2 className="h-12 w-12 text-primary animate-spin" />
+          </div>
+        ) : error ? (
+          <div className="text-center py-20">
+            <p className="text-destructive text-lg">حدث خطأ أثناء تحميل العروض</p>
+            <Button variant="outline" className="mt-4" onClick={() => window.location.reload()}>إعادة المحاولة</Button>
+          </div>
+        ) : offers?.length === 0 ? (
+          <div className="text-center py-20 bg-card/30 rounded-3xl border border-dashed border-white/10">
+            <p className="text-muted-foreground text-lg">لا توجد عروض مطابقة لبحثك</p>
+            <Button variant="link" onClick={() => { setSearch(""); setCategory("all"); }} className="mt-2 text-primary">
+              عرض كل العروض
+            </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredOffers?.map((offer) => (
-              <Card key={offer.id} className="bg-[#112240] border-[#d4af37]/20 hover:border-[#d4af37]/50 transition-all overflow-hidden group">
-                <div className="relative h-48 overflow-hidden">
-                  <img 
-                    src={offer.imageUrl} 
-                    alt={offer.title} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute top-2 right-2 bg-[#d4af37] text-[#0a192f] font-bold px-2 py-1 rounded-md">
-                    {offer.discount}% خصم
-                  </div>
-                </div>
-                <CardHeader className="pb-2">
-                  <div className="text-sm text-[#d4af37] mb-1">{offer.category}</div>
-                  <h3 className="text-xl font-bold">{offer.title}</h3>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-400 text-sm line-clamp-2">{offer.description}</p>
-                  <div className="mt-4 flex items-baseline gap-2">
-                    <span className="text-2xl font-bold text-[#d4af37]">{offer.newPrice} ريال</span>
-                    <span className="text-sm text-gray-500 line-through">{offer.oldPrice} ريال</span>
-                  </div>
-                </CardContent>
-                <CardFooter className="flex gap-2">
-                  <Button 
-                    className="flex-1 bg-[#d4af37] hover:bg-[#b8962f] text-[#0a192f] font-bold"
-                    onClick={() => shareOnWhatsApp(offer)}
-                  >
-                    <Share2 className="ml-2 h-4 w-4" />
-                    مشاركة
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <AnimatePresence>
+              {offers?.map((offer, index) => (
+                <OfferCard key={offer.id} offer={offer} />
+              ))}
+            </AnimatePresence>
           </div>
         )}
-      </main>
+      </section>
     </div>
   );
 }

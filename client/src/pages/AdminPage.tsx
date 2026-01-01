@@ -1,212 +1,96 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Offer, insertOfferSchema } from "@shared/schema";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useOffers, useDeleteOffer } from "@/hooks/use-offers";
+import { OfferCard } from "@/components/OfferCard";
+import { OfferForm } from "@/components/OfferForm";
+import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { queryClient, apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
-import { Trash2, Plus, Loader2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 export default function AdminPage() {
-  const { toast } = useToast();
-  const { data: offers, isLoading } = useQuery<Offer[]>({
-    queryKey: ["/api/offers"],
-  });
+  const { data: offers, isLoading } = useOffers();
+  const deleteMutation = useDeleteOffer();
+  const [deleteId, setDeleteId] = useState<number | null>(null);
 
-  const form = useForm({
-    resolver: zodResolver(insertOfferSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      oldPrice: "",
-      newPrice: "",
-      discount: 0,
-      imageUrl: "",
-      category: "",
-    },
-  });
-
-  const createMutation = useMutation({
-    mutationFn: async (values: any) => {
-      const res = await apiRequest("POST", "/api/offers", values);
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/offers"] });
-      form.reset();
-      toast({ title: "تمت إضافة العرض بنجاح" });
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (id: number) => {
-      await apiRequest("DELETE", `/api/offers/${id}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/offers"] });
-      toast({ title: "تم حذف العرض بنجاح" });
-    },
-  });
+  const handleDelete = async () => {
+    if (deleteId) {
+      await deleteMutation.mutateAsync(deleteId);
+      setDeleteId(null);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-[#0a192f] text-white p-8 dir-rtl" dir="rtl">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Form Column */}
-        <div className="lg:col-span-1">
-          <Card className="bg-[#112240] border-[#d4af37]/20 text-white">
-            <CardHeader>
-              <CardTitle className="text-[#d4af37]">إضافة عرض جديد</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit((v) => createMutation.mutate(v))} className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>العنوان</FormLabel>
-                        <FormControl>
-                          <Input className="bg-[#0a192f] border-[#d4af37]/30" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="oldPrice"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>السعر القديم</FormLabel>
-                          <FormControl>
-                            <Input className="bg-[#0a192f] border-[#d4af37]/30" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="newPrice"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>السعر الجديد</FormLabel>
-                          <FormControl>
-                            <Input className="bg-[#0a192f] border-[#d4af37]/30" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <FormField
-                    control={form.control}
-                    name="discount"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>نسبة الخصم</FormLabel>
-                        <FormControl>
-                          <Input type="number" className="bg-[#0a192f] border-[#d4af37]/30" {...field} onChange={e => field.onChange(parseInt(e.target.value))} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="imageUrl"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>رابط الصورة</FormLabel>
-                        <FormControl>
-                          <Input className="bg-[#0a192f] border-[#d4af37]/30" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="category"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>التصنيف</FormLabel>
-                        <FormControl>
-                          <Input className="bg-[#0a192f] border-[#d4af37]/30" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>الوصف</FormLabel>
-                        <FormControl>
-                          <Textarea className="bg-[#0a192f] border-[#d4af37]/30" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-[#d4af37] hover:bg-[#b8962f] text-[#0a192f] font-bold"
-                    disabled={createMutation.isPending}
-                  >
-                    {createMutation.isPending ? <Loader2 className="animate-spin" /> : <Plus className="ml-2 h-4 w-4" />}
-                    إضافة العرض
-                  </Button>
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
+    <div className="min-h-screen bg-background text-foreground pb-20">
+      <Navbar />
+
+      <main className="container mx-auto px-4 py-8">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+          <div>
+            <h1 className="text-3xl font-bold font-heading text-white">لوحة التحكم</h1>
+            <p className="text-muted-foreground mt-2">إدارة العروض والتخفيضات</p>
+          </div>
+          <OfferForm />
         </div>
 
-        {/* List Column */}
-        <div className="lg:col-span-2">
-          <Card className="bg-[#112240] border-[#d4af37]/20 text-white">
-            <CardHeader>
-              <CardTitle className="text-[#d4af37]">العروض الحالية</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {isLoading ? (
-                <div className="flex justify-center p-8"><Loader2 className="animate-spin text-[#d4af37] h-8 w-8" /></div>
-              ) : (
-                <div className="space-y-4">
-                  {offers?.map((offer) => (
-                    <div key={offer.id} className="flex items-center justify-between p-4 bg-[#0a192f] rounded-lg border border-[#d4af37]/10">
-                      <div className="flex items-center gap-4">
-                        <img src={offer.imageUrl} className="w-16 h-16 rounded object-cover" alt="" />
-                        <div>
-                          <div className="font-bold">{offer.title}</div>
-                          <div className="text-sm text-gray-400">{offer.newPrice} ريال</div>
-                        </div>
-                      </div>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        className="text-red-500 hover:text-red-400 hover:bg-red-500/10"
-                        onClick={() => deleteMutation.mutate(offer.id)}
-                      >
-                        <Trash2 className="h-5 w-5" />
-                      </Button>
-                    </div>
-                  ))}
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20">
+            <Loader2 className="h-10 w-10 text-primary animate-spin" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {offers?.map((offer) => (
+              <div key={offer.id} className="relative group">
+                <OfferCard 
+                  offer={offer} 
+                  isAdmin 
+                  onEdit={() => {
+                    // Handled by wrapping OfferCard in a container that opens the dialog?
+                    // Actually simpler to just pass a custom button component or render the Dialog here
+                  }}
+                  onDelete={() => setDeleteId(offer.id)}
+                />
+                
+                {/* Overlay Edit Button hack to reuse the form easily without refactoring card too much */}
+                <div className="absolute top-2 right-2 z-50 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <OfferForm 
+                    offer={offer} 
+                    trigger={<Button size="sm" variant="secondary">تعديل سريع</Button>}
+                  />
                 </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
+
+      <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
+        <AlertDialogContent className="bg-card border-white/10 text-foreground">
+          <AlertDialogHeader>
+            <AlertDialogTitle>هل أنت متأكد من الحذف؟</AlertDialogTitle>
+            <AlertDialogDescription className="text-muted-foreground">
+              لا يمكن التراجع عن هذا الإجراء. سيتم حذف العرض نهائياً من قاعدة البيانات.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-transparent border-white/10 hover:bg-white/5">إلغاء</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDelete}
+              className="bg-destructive text-white hover:bg-destructive/90"
+            >
+              حذف نهائي
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
