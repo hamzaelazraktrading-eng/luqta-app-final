@@ -1,38 +1,58 @@
-import { type User, type InsertUser } from "@shared/schema";
-import { randomUUID } from "crypto";
-
-// modify the interface with any CRUD methods
-// you might need
+import { db } from "./db";
+import { offers, type InsertOffer, type Offer } from "@shared/schema";
+import { eq, desc, ilike, or } from "drizzle-orm";
 
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  getOffers(search?: string, category?: string): Promise<Offer[]>;
+  getOffer(id: number): Promise<Offer | undefined>;
+  createOffer(offer: InsertOffer): Promise<Offer>;
+  updateOffer(id: number, offer: Partial<InsertOffer>): Promise<Offer>;
+  deleteOffer(id: number): Promise<void>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-
-  constructor() {
-    this.users = new Map();
+export class DatabaseStorage implements IStorage {
+  async getOffers(search?: string, category?: string): Promise<Offer[]> {
+    let query = db.select().from(offers).orderBy(desc(offers.createdAt));
+    
+    if (category) {
+      query = query.where(eq(offers.category, category));
+    }
+    
+    if (search) {
+      const searchLower = `%${search}%`;
+      query = query.where(
+        or(
+          ilike(offers.title, searchLower),
+          ilike(offers.description, searchLower)
+        )
+      );
+    }
+    
+    return await query;
   }
 
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+  async getOffer(id: number): Promise<Offer | undefined> {
+    const [offer] = await db.select().from(offers).where(eq(offers.id, id));
+    return offer;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+  async createOffer(insertOffer: InsertOffer): Promise<Offer> {
+    const [offer] = await db.insert(offers).values(insertOffer).returning();
+    return offer;
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+  async updateOffer(id: number, updates: Partial<InsertOffer>): Promise<Offer> {
+    const [updated] = await db
+      .update(offers)
+      .set(updates)
+      .where(eq(offers.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteOffer(id: number): Promise<void> {
+    await db.delete(offers).where(eq(offers.id, id));
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
