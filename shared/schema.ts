@@ -11,6 +11,8 @@ export const offers = pgTable("offers", {
   discount: text("discount"),
   imageUrl: text("image_url").notNull(),
   category: text("category").notNull(),
+  storeName: text("store_name"), // تأكد من وجود هذا
+  affiliateUrl: text("affiliate_url"), // تأكد من وجود هذا
   createdAt: timestamp("created_at").defaultNow(),
 });
 

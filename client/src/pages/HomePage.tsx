@@ -2,117 +2,112 @@ import { useState } from "react";
 import { useOffers } from "@/hooks/use-offers";
 import { OfferCard } from "@/components/OfferCard";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Navbar } from "@/components/Navbar";
-import { Search, SlidersHorizontal, Loader2 } from "lucide-react";
+import { Search, Loader2, LayoutGrid, Flame, Heart, ShoppingCart, Info } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLocation } from "wouter"; // لإصلاح عمل القوائم
 
 export default function HomePage() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
+  const [, setLocation] = useLocation(); // وظيفة التنقل بين الصفحات
   const { data: offers, isLoading, error } = useOffers({ search, category });
 
   const categories = [
-    { id: "all", label: "الكل" },
-    { id: "electronics", label: "إلكترونيات" },
-    { id: "perfumes", label: "عطور" },
-    { id: "fashion", label: "أزياء" },
-    { id: "food", label: "مأكولات" },
+    { id: "all", label: "الكل", icon: <LayoutGrid size={14} /> },
+    { id: "electronics", label: "إلكترونيات", icon: <ShoppingCart size={14} /> },
+    { id: "perfumes", label: "عطور", icon: <Flame size={14} /> },
+    { id: "fashion", label: "أزياء", icon: <Heart size={14} /> },
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-20">
-      <Navbar />
-
-      {/* Hero Section */}
-      <section className="relative py-20 px-4 overflow-hidden">
-        <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[100px]" />
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px]" />
+    <div className="min-h-screen bg-[#FDFDFD] text-foreground pb-28 font-sans" dir="rtl">
+      
+      {/* 1. هيدر نحيف وأنيق (Fixed Slim Header) */}
+      <div className="sticky top-0 z-50 bg-[#1a237e] text-white shadow-xl border-b border-[#c5a059]/30">
+        <div className="px-6 py-3 flex justify-between items-center">
+           <div className="flex flex-col">
+             <h1 className="text-xl font-black text-[#c5a059] leading-none">صيدات الخليج</h1>
+             <p className="text-[9px] text-white/70 mt-1 font-medium">أقوى عروض نون، أمازون، ونامشي في مكان واحد</p>
+           </div>
+           <div className="flex gap-2">
+             <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center border border-white/10">
+               <Info size={16} className="text-[#c5a059]" />
+             </div>
+           </div>
         </div>
-        
-        <div className="container mx-auto relative z-10 text-center max-w-3xl">
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-black font-heading mb-6 leading-tight"
-          >
-            اكتشف أفضل <span className="text-gold-gradient">العروض الحصرية</span> في الخليج
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-lg md:text-xl text-muted-foreground mb-10 leading-relaxed"
-          >
-            وجهتك الأولى للتوفير. نجمع لك أفضل الخصومات والصفقات المميزة في مكان واحد.
-          </motion.p>
 
-          {/* Search Bar */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="flex gap-2 max-w-xl mx-auto bg-card/50 p-2 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-sm"
-          >
-            <div className="relative flex-1">
-              <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-              <Input 
-                className="pr-10 bg-transparent border-none h-12 text-lg focus-visible:ring-0 placeholder:text-muted-foreground/50"
-                placeholder="ابحث عن عرض..." 
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-            <Button size="lg" className="h-12 px-8 rounded-xl">بحث</Button>
-          </motion.div>
+        {/* 2. شريط البحث المدمج (Compact Search) */}
+        <div className="px-6 pb-3">
+          <div className="relative group">
+            <input
+              type="text"
+              placeholder="ابحث عن العرض المفقود..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full bg-white/95 text-gray-900 text-xs h-10 pr-10 rounded-xl shadow-inner focus:outline-none focus:ring-1 focus:ring-[#c5a059]"
+            />
+            <Search className="absolute right-3 top-2.5 text-gray-400" size={16} />
+          </div>
         </div>
-      </section>
+      </div>
 
-      {/* Categories Filter */}
-      <section className="container mx-auto px-4 mb-10">
-        <div className="flex flex-wrap gap-2 justify-center">
-          {categories.map((cat) => (
-            <Button
-              key={cat.id}
-              variant={category === cat.id ? "default" : "outline"}
-              onClick={() => setCategory(cat.id)}
-              className={`rounded-full px-6 transition-all duration-300 ${category === cat.id ? 'shadow-lg shadow-primary/20 scale-105' : 'bg-card border-white/5 hover:border-primary/50'}`}
-            >
-              {cat.label}
-            </Button>
-          ))}
-        </div>
-      </section>
+      {/* 3. شريط الأقسام (Modern Scroll) */}
+      <div className="flex gap-2 overflow-x-auto p-4 no-scrollbar bg-white shadow-sm mb-2">
+        {categories.map((cat) => (
+          <button
+            key={cat.id}
+            onClick={() => setCategory(cat.id)}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-xl whitespace-nowrap text-xs font-bold transition-all border ${
+              category === cat.id 
+              ? "bg-[#c5a059] text-[#1a237e] border-[#1a237e]/10 shadow-md" 
+              : "bg-gray-50 text-gray-500 border-transparent"
+            }`}
+          >
+            {cat.icon}
+            {cat.label}
+          </button>
+        ))}
+      </div>
 
-      {/* Offers Grid */}
-      <section className="container mx-auto px-4">
+      {/* 4. منطقة العروض */}
+      <main className="px-4 mt-2">
         {isLoading ? (
-          <div className="flex justify-center items-center py-20">
-            <Loader2 className="h-12 w-12 text-primary animate-spin" />
-          </div>
-        ) : error ? (
-          <div className="text-center py-20">
-            <p className="text-destructive text-lg">حدث خطأ أثناء تحميل العروض</p>
-            <Button variant="outline" className="mt-4" onClick={() => window.location.reload()}>إعادة المحاولة</Button>
-          </div>
-        ) : offers?.length === 0 ? (
-          <div className="text-center py-20 bg-card/30 rounded-3xl border border-dashed border-white/10">
-            <p className="text-muted-foreground text-lg">لا توجد عروض مطابقة لبحثك</p>
-            <Button variant="link" onClick={() => { setSearch(""); setCategory("all"); }} className="mt-2 text-primary">
-              عرض كل العروض
-            </Button>
+          <div className="flex flex-col items-center justify-center py-20">
+            <Loader2 className="h-8 w-8 animate-spin text-[#c5a059]" />
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <motion.div layout className="grid grid-cols-2 gap-3">
             <AnimatePresence>
-              {offers?.map((offer, index) => (
-                <OfferCard key={offer.id} offer={offer} />
+              {offers?.map((offer: any) => (
+                <motion.div key={offer.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                  <OfferCard offer={offer} />
+                </motion.div>
               ))}
             </AnimatePresence>
-          </div>
+          </motion.div>
         )}
-      </section>
+      </main>
+
+      {/* 5. القائمة السفلية (إصلاح الروابط) */}
+      <nav className="fixed bottom-4 left-4 right-4 bg-[#1a237e] h-16 rounded-2xl shadow-2xl border border-white/10 flex items-center justify-around z-[100]">
+        <button onClick={() => setLocation("/")} className="flex flex-col items-center text-[#c5a059]">
+           <LayoutGrid size={20} />
+           <span className="text-[10px] mt-1">الرئيسية</span>
+        </button>
+        <button onClick={() => setLocation("/trending")} className="flex flex-col items-center text-white/40">
+           <Flame size={20} />
+           <span className="text-[10px] mt-1">الرائج</span>
+        </button>
+        <button onClick={() => setLocation("/favorites")} className="flex flex-col items-center text-white/40">
+           <Heart size={20} />
+           <span className="text-[10px] mt-1">المفضلة</span>
+        </button>
+        {/* زر سري للأدمن */}
+        <button onDoubleClick={() => setLocation("/admin")} className="flex flex-col items-center text-white/20">
+           <ShoppingCart size={20} />
+           <span className="text-[10px] mt-1">المتجر</span>
+        </button>
+      </nav>
     </div>
   );
 }

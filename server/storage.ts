@@ -13,21 +13,13 @@ export interface IStorage {
 export class DatabaseStorage implements IStorage {
   async getOffers(search?: string, category?: string): Promise<Offer[]> {
     let query = db.select().from(offers).orderBy(desc(offers.createdAt));
-    
-    if (category) {
+    if (category && category !== "all") {
       query = query.where(eq(offers.category, category));
     }
-    
     if (search) {
       const searchLower = `%${search}%`;
-      query = query.where(
-        or(
-          ilike(offers.title, searchLower),
-          ilike(offers.description, searchLower)
-        )
-      );
+      query = query.where(or(ilike(offers.title, searchLower), ilike(offers.description, searchLower)));
     }
-    
     return await query;
   }
 
@@ -42,11 +34,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateOffer(id: number, updates: Partial<InsertOffer>): Promise<Offer> {
-    const [updated] = await db
-      .update(offers)
-      .set(updates)
-      .where(eq(offers.id, id))
-      .returning();
+    const [updated] = await db.update(offers).set(updates).where(eq(offers.id, id)).returning();
     return updated;
   }
 
