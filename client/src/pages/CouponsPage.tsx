@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { BottomNav, AdBanner } from "@/components/Navigation";
 import { useToast } from "@/hooks/use-toast";
 
+import { Footer } from "@/components/Footer";
+
 export default function CouponsPage() {
   const [unlocking, setUnlocking] = useState<number | null>(null);
   const [unlocked, setUnlocked] = useState<number[]>([]);
@@ -34,13 +36,13 @@ export default function CouponsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F1F5F9] pb-[140px] font-tajawal" dir="rtl">
+    <div className="min-h-screen bg-[#F1F5F9] font-tajawal" dir="rtl">
       <header className="bg-[#0f172a] text-white p-8 shadow-2xl rounded-b-[3rem] text-center">
         <h1 className="text-3xl font-bold text-[#f97316]">كوبونات اليوم</h1>
         <p className="text-white/50 text-sm mt-2 font-medium">أكواد خصم حصرية بانتظارك</p>
       </header>
 
-      <main className="p-6 space-y-6 -mt-6">
+      <main className="p-6 space-y-6 -mt-6 max-w-screen-xl mx-auto">
         <AdBanner type="hero" />
         {coupons.map((coupon) => (
           <motion.div 
@@ -93,13 +95,10 @@ export default function CouponsPage() {
         ))}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex flex-col pointer-events-none">
-        <div className="pointer-events-auto">
-          <AdBanner type="footer" />
-        </div>
-        <div className="pointer-events-auto">
-          <BottomNav />
-        </div>
+      <div className="mt-8">
+        <AdBanner type="footer" />
+        <Footer />
+        <BottomNav />
       </div>
     </div>
   );
