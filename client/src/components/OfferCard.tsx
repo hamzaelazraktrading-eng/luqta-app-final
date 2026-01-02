@@ -13,7 +13,7 @@ interface OfferCardProps {
 
 export function OfferCard({ offer, isAdmin, onDelete }: OfferCardProps) {
   const handleWhatsApp = () => {
-    const text = encodeURIComponent(`شاهد هذا العرض الرائع من صيدات الخليج: ${offer.title}\n${offer.affiliateUrl || ''}`);
+    const text = encodeURIComponent(`شاهد هذا العرض الرائع من لُقطة: ${offer.title}\n${offer.affiliateUrl || ''}`);
     window.open(`https://wa.me/?text=${text}`, '_blank');
   };
 
@@ -29,62 +29,66 @@ export function OfferCard({ offer, isAdmin, onDelete }: OfferCardProps) {
 
   return (
     <motion.div 
-      whileHover={{ y: -8 }} 
-      transition={{ duration: 0.3 }}
-      className="h-full"
+      whileHover={{ y: -6 }} 
+      transition={{ duration: 0.2 }}
+      className="h-full flex flex-col"
     >
-      <Card className="overflow-hidden bg-white border-0 h-full flex flex-col rounded-[24px] shadow-lg hover:shadow-xl transition-all duration-300">
-        <div className="relative aspect-[4/3] overflow-hidden">
+      <Card className="overflow-hidden bg-white border-0 h-full flex flex-col rounded-[20px] shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100/50">
+        <div className="relative aspect-square overflow-hidden bg-gray-50">
           <motion.img 
             src={offer.imageUrl} 
             className="w-full h-full object-cover"
-            whileHover={{ scale: 1.1 }}
-            transition={{ duration: 0.5 }}
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.4 }}
           />
-          <div className="absolute top-3 right-3 flex flex-col gap-2">
+          <div className="absolute top-2 right-2 flex flex-col gap-1.5">
             {offer.discount && (
-              <div className="bg-red-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-full shadow-lg">
-                {offer.discount}% خصم
+              <div className="bg-orange-500 text-white text-[10px] font-black px-2.5 py-1.5 rounded-xl shadow-lg shadow-orange-500/30">
+                {offer.discount}% لُقطة
               </div>
             )}
           </div>
-          <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-md text-[#1a237e] text-[10px] px-3 py-1 rounded-full font-bold border border-white/20">
-            {offer.storeName || "عروض حصرية"}
+          <div className="absolute bottom-2 left-2 bg-[#121212]/80 backdrop-blur-md text-white text-[9px] px-2.5 py-1 rounded-lg font-bold border border-white/10">
+            {offer.storeName || "عرض خاص"}
           </div>
-          <button className="absolute top-3 left-3 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm">
+          <button className="absolute top-2 left-2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-xl flex items-center justify-center text-gray-400 hover:text-orange-500 transition-all shadow-md active:scale-90">
             <Heart size={16} />
           </button>
         </div>
-        <CardContent className="p-4 text-right flex-1 flex flex-col" dir="rtl">
-          <h3 className="text-sm font-bold text-gray-800 line-clamp-2 mb-2 leading-relaxed min-h-[40px]">{offer.title}</h3>
-          
-          <div className="mt-auto">
+        <CardContent className="p-3.5 text-right flex-1 flex flex-col justify-between" dir="rtl">
+          <div>
+            <h3 className="text-[13px] font-bold text-[#121212] line-clamp-2 mb-2 leading-snug h-[36px] overflow-hidden">{offer.title}</h3>
+            
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-xl font-black text-[#1a237e]">{offer.newPrice} ر.س</span>
+              <span className="text-xl font-black text-orange-600">{offer.newPrice} ر.س</span>
               {offer.oldPrice && (
-                <span className="text-[11px] text-gray-400 line-through decoration-red-400/50">{offer.oldPrice} ر.س</span>
+                <span className="text-[10px] text-gray-400 line-through decoration-gray-400/50">{offer.oldPrice} ر.س</span>
               )}
             </div>
-            
+          </div>
+          
+          <div className="space-y-2">
             <div className="flex gap-2">
               <Button 
                 onClick={() => offer.affiliateUrl && window.open(offer.affiliateUrl, '_blank')} 
-                className="flex-1 bg-[#c5a059] hover:bg-[#b38f4d] text-[#1a237e] text-xs h-10 rounded-xl font-bold transition-all duration-300 shadow-md hover:shadow-lg active:scale-95"
+                className="flex-1 bg-orange-500 hover:bg-orange-600 text-white text-[11px] h-10 rounded-xl font-black transition-all shadow-md active:scale-95"
               >
-                اقتنص العرض
+                اقتنص الآن
               </Button>
-              <Button onClick={handleShare} variant="outline" className="w-10 h-10 p-0 border-gray-100 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
-                <Share2 size={18} className="text-gray-600" />
-              </Button>
-              <Button onClick={handleWhatsApp} variant="outline" className="w-10 h-10 p-0 border-green-100 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">
+              <Button onClick={handleWhatsApp} variant="outline" className="w-10 h-10 p-0 border-green-100 bg-green-50 rounded-xl hover:bg-green-100 transition-all hover:scale-105 active:scale-90 flex items-center justify-center">
                 <MessageCircle size={18} className="text-green-600" />
               </Button>
             </div>
+            
+            <Button onClick={handleShare} variant="ghost" className="w-full h-8 text-gray-400 hover:text-orange-500 text-[10px] gap-2 p-0 flex items-center justify-center">
+              <Share2 size={12} />
+              <span>مشاركة العرض</span>
+            </Button>
           </div>
 
           {isAdmin && (
-            <div className="flex gap-2 mt-4 pt-3 border-t border-gray-100">
-              <Button onClick={onDelete} variant="ghost" className="text-[11px] text-red-500 flex-1 hover:bg-red-50">حذف العرض</Button>
+            <div className="mt-3 pt-3 border-t border-gray-100 flex gap-2">
+              <Button onClick={onDelete} variant="ghost" className="text-[10px] text-red-500 h-8 flex-1 hover:bg-red-50 font-bold">حذف لُقطة</Button>
             </div>
           )}
         </CardContent>
