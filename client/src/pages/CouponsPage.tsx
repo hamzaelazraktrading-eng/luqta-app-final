@@ -1,17 +1,18 @@
 import { useState, useEffect } from "react";
-import { Ticket, Loader2, Eye, Copy, Check } from "lucide-react";
+import { Ticket, Loader2, Eye, Copy, Check, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { BottomNav, AdBanner } from "@/components/Navigation";
 import { useToast } from "@/hooks/use-toast";
-
 import { Footer } from "@/components/Footer";
+import { useLocation } from "wouter";
 
 export default function CouponsPage() {
   const [unlocking, setUnlocking] = useState<number | null>(null);
   const [unlocked, setUnlocked] = useState<number[]>([]);
   const [copied, setCopied] = useState<string | null>(null);
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   const coupons = [
     { id: 1, store: "أمازون", code: "AMZ50", discount: "خصم 50%", desc: "على كافة المنتجات الإلكترونية" },
@@ -37,7 +38,14 @@ export default function CouponsPage() {
 
   return (
     <div className="min-h-screen bg-[#F1F5F9] font-tajawal" dir="rtl">
-      <header className="bg-[#0f172a] text-white p-8 shadow-2xl rounded-b-[3rem] text-center">
+      <header className="bg-[#0f172a] text-white p-8 shadow-2xl rounded-b-[3rem] text-center relative">
+        <button 
+          onClick={() => setLocation("/")}
+          className="absolute top-8 right-6 flex items-center gap-2 px-4 py-2 bg-white/10 rounded-xl border border-white/10 text-white/80 hover:bg-white/20 transition-all text-xs font-bold"
+        >
+          <ArrowRight size={16} />
+          رجوع للرئيسية
+        </button>
         <h1 className="text-3xl font-bold text-[#f97316]">كوبونات اليوم</h1>
         <p className="text-white/50 text-sm mt-2 font-medium">أكواد خصم حصرية بانتظارك</p>
       </header>

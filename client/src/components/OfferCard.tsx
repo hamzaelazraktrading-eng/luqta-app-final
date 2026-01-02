@@ -43,7 +43,7 @@ export function OfferCard({ offer, isAdmin, onDelete }: OfferCardProps) {
       className="h-full flex flex-col"
     >
       <Card className="overflow-hidden bg-white/70 backdrop-blur-md border border-white h-full flex flex-col rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all duration-300">
-        <div className="relative aspect-square overflow-hidden group">
+        <div className="relative aspect-[16/10] overflow-hidden group">
           <motion.img 
             src={offer.imageUrl} 
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -66,7 +66,7 @@ export function OfferCard({ offer, isAdmin, onDelete }: OfferCardProps) {
         
         <CardContent className="p-5 text-right flex-1 flex flex-col justify-between" dir="rtl">
           <div>
-            <h3 className="text-sm font-bold text-[#0f172a] line-clamp-2 mb-3 leading-relaxed h-[40px]">{offer.title}</h3>
+            <h3 className="text-base font-bold text-[#0f172a] line-clamp-2 mb-2 leading-tight h-[48px] overflow-hidden">{offer.title}</h3>
             <div className="flex items-center gap-2 mb-4">
               <span className="text-xl font-bold text-[#0f172a]">{offer.newPrice} ر.س</span>
               {offer.oldPrice && (
@@ -76,21 +76,21 @@ export function OfferCard({ offer, isAdmin, onDelete }: OfferCardProps) {
           </div>
           
           <div className="space-y-3">
-            <div className="flex gap-2">
+            <div className="flex gap-2 w-full">
               <Button 
                 asChild
-                className="flex-1 bg-[#0f172a] hover:bg-[#1e293b] text-white text-xs h-12 rounded-2xl font-bold active:scale-95 transition-all"
+                className="flex-[3] bg-[#0f172a] hover:bg-[#1e293b] text-white text-xs h-12 rounded-2xl font-bold active:scale-95 transition-all"
               >
                 <a href={offer.affiliateUrl || '#'} target="_blank" rel="noopener noreferrer">اقتنص العرض</a>
               </Button>
-              <Button onClick={handleWhatsApp} variant="outline" className="w-12 h-12 p-0 border-green-100 bg-green-50 rounded-2xl hover:bg-green-100 active:scale-95 transition-all">
+              <Button onClick={handleWhatsApp} variant="outline" className="flex-1 h-12 p-0 border-green-100 bg-green-50 rounded-2xl hover:bg-green-100 active:scale-95 transition-all flex items-center justify-center">
                 <MessageCircle size={22} className="text-green-600" />
               </Button>
             </div>
             
             <motion.div 
               whileTap={{ scale: 0.95 }}
-              className="flex items-center justify-center py-2 px-4 rounded-full border border-indigo-100 bg-white text-[10px] text-[#0f172a] gap-2 hover:bg-indigo-50 transition-colors cursor-pointer shadow-sm"
+              className="flex items-center justify-center py-2.5 px-4 rounded-full border border-indigo-100 bg-white text-[11px] text-[#0f172a] gap-2 hover:bg-indigo-50 transition-colors cursor-pointer shadow-sm"
             >
               <Share2 size={14} />
               <span className="font-bold">مشاركة العرض</span>

@@ -18,7 +18,7 @@ export default function HomePage() {
     { id: "electronics", label: "إلكترونيات" },
     { id: "perfumes", label: "عطور" },
     { id: "fashion", label: "أزياء" },
-    { id: "home", label: "منزل" },
+    { id: "home", label: "المطبخ" },
   ];
 
   return (

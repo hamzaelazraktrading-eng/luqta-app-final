@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import { useState, useEffect } from "react";
 import { OfferCard } from "@/components/OfferCard";
-
 import { Footer } from "@/components/Footer";
 
 export default function FavoritesPage() {
@@ -19,7 +18,14 @@ export default function FavoritesPage() {
 
   return (
     <div className="min-h-screen bg-[#F1F5F9] font-tajawal" dir="rtl">
-      <header className="bg-[#0f172a] text-white p-8 shadow-2xl rounded-b-[3rem] flex flex-col items-center justify-center gap-2">
+      <header className="bg-[#0f172a] text-white p-8 shadow-2xl rounded-b-[3rem] flex flex-col items-center justify-center gap-4 relative">
+        <button 
+          onClick={() => setLocation("/")}
+          className="absolute top-8 right-6 flex items-center gap-2 px-4 py-2 bg-white/10 rounded-xl border border-white/10 text-white/80 hover:bg-white/20 transition-all text-xs font-bold"
+        >
+          <ArrowRight size={16} />
+          رجوع للرئيسية
+        </button>
         <div className="flex items-center gap-3">
           <Heart className="text-red-500 fill-red-500" size={28} />
           <h1 className="text-2xl font-bold">المفضلة</h1>
@@ -46,7 +52,7 @@ export default function FavoritesPage() {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {favorites.map((offer: any) => <OfferCard key={offer.id} offer={offer} />)}
           </div>
         )}
