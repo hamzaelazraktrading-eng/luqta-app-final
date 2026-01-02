@@ -25,8 +25,10 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router />
-      <Toaster />
+      <div className="font-tajawal bg-[#F1F5F9] min-h-screen">
+        <Router />
+        <Toaster />
+      </div>
     </QueryClientProvider>
   );
 }

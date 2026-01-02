@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useOffers } from "@/hooks/use-offers";
 import { OfferCard } from "@/components/OfferCard";
 import { Search, Loader2, Info } from "lucide-react";
@@ -11,16 +11,16 @@ export default function HomePage() {
   const { data: offers, isLoading } = useOffers({ search, category });
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-[#0f172a] pb-32 font-tajawal" dir="rtl">
-      <header className="sticky top-0 z-50 bg-[#0f172a] text-white shadow-xl border-b border-indigo-500/20">
+    <div className="min-h-screen bg-[#F1F5F9] text-[#0f172a] pb-[140px]" dir="rtl">
+      <header className="sticky top-0 z-50 bg-[#0f172a]/80 backdrop-blur-xl text-white border-b border-white/5">
         <div className="px-6 py-4 flex justify-between items-center">
           <div className="flex flex-col">
-            <h1 className="text-2xl font-black text-indigo-400 leading-none">لُقطة <span className="text-white/60 font-light text-sm ml-1">Luqta</span></h1>
-            <p className="text-[10px] text-white/50 mt-1">أفضل الصيدات في مكان واحد</p>
+            <h1 className="text-2xl font-bold text-[#f97316] leading-none">لُقطة <span className="text-white/60 font-medium text-sm ml-1">Luqta</span></h1>
+            <p className="text-[10px] text-white/50 mt-1 font-medium">أفضل الصيدات في مكان واحد</p>
           </div>
-          <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center border border-white/10 text-indigo-400">
+          <motion.div whileTap={{ scale: 0.9 }} className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center border border-white/10 text-[#f97316]">
             <Info size={18} />
-          </div>
+          </motion.div>
         </div>
         <div className="px-6 pb-4">
           <div className="relative group">
@@ -29,9 +29,9 @@ export default function HomePage() {
               placeholder="ابحث عن لُقطتك القادمة..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-white/10 backdrop-blur-md text-white placeholder-white/30 text-sm h-12 pr-11 rounded-2xl border border-white/10 focus:ring-2 focus:ring-indigo-500/50 transition-all"
+              className="w-full bg-white/10 backdrop-blur-md text-white placeholder-white/30 text-sm h-12 pr-11 rounded-2xl border border-white/10 focus:ring-2 focus:ring-[#f97316]/50 transition-all outline-none"
             />
-            <Search className="absolute right-4 top-3.5 text-indigo-400" size={18} />
+            <Search className="absolute right-4 top-3.5 text-[#f97316]" size={18} />
           </div>
         </div>
       </header>
@@ -39,7 +39,7 @@ export default function HomePage() {
       <main className="max-w-screen-xl mx-auto px-4 pt-6">
         <AdBanner type="hero" />
         {isLoading ? (
-          <div className="flex justify-center py-20"><Loader2 className="h-10 w-10 animate-spin text-indigo-500" /></div>
+          <div className="flex justify-center py-20"><Loader2 className="h-10 w-10 animate-spin text-[#f97316]" /></div>
         ) : (
           <motion.div 
             initial={{ opacity: 0 }} 
@@ -50,8 +50,15 @@ export default function HomePage() {
           </motion.div>
         )}
       </main>
-      <AdBanner type="footer" />
-      <BottomNav />
+
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex flex-col pointer-events-none">
+        <div className="pointer-events-auto">
+          <AdBanner type="footer" />
+        </div>
+        <div className="pointer-events-auto">
+          <BottomNav />
+        </div>
+      </div>
     </div>
   );
 }

@@ -3,15 +3,34 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Heart, Share2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 
 interface OfferCardProps {
   offer: Offer;
   isAdmin?: boolean;
-  onEdit?: () => void;
   onDelete?: () => void;
 }
 
 export function OfferCard({ offer, isAdmin, onDelete }: OfferCardProps) {
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  useEffect(() => {
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    setIsFavorite(favorites.some((f: any) => f.id === offer.id));
+  }, [offer.id]);
+
+  const toggleFavorite = () => {
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    let newFavorites;
+    if (isFavorite) {
+      newFavorites = favorites.filter((f: any) => f.id !== offer.id);
+    } else {
+      newFavorites = [...favorites, offer];
+    }
+    localStorage.setItem('favorites', JSON.stringify(newFavorites));
+    setIsFavorite(!isFavorite);
+  };
+
   const handleWhatsApp = () => {
     const text = encodeURIComponent(`شاهد هذا العرض الرائع من لُقطة: ${offer.title}\n${offer.affiliateUrl || ''}`);
     window.open(`https://wa.me/?text=${text}`, '_blank');
@@ -19,35 +38,39 @@ export function OfferCard({ offer, isAdmin, onDelete }: OfferCardProps) {
 
   return (
     <motion.div 
-      whileHover={{ scale: 1.02, y: -4 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      whileHover={{ y: -4 }}
+      whileTap={{ scale: 0.98 }}
       className="h-full flex flex-col"
     >
-      <Card className="overflow-hidden bg-white/90 backdrop-blur-md border border-white/40 h-full flex flex-col rounded-3xl shadow-sm hover:shadow-md transition-all duration-300">
+      <Card className="overflow-hidden bg-white/70 backdrop-blur-md border border-white h-full flex flex-col rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all duration-300">
         <div className="relative aspect-square overflow-hidden group">
           <motion.img 
             src={offer.imageUrl} 
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
-          <div className="absolute top-3 right-3">
+          <div className="absolute top-4 right-4">
             {offer.discount && (
-              <div className="bg-[#F97316] text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-lg">
+              <div className="bg-[#f97316] text-white text-[10px] font-bold px-3 py-1.5 rounded-2xl shadow-lg">
                 خصم {offer.discount}%
               </div>
             )}
           </div>
-          <button className="absolute top-3 left-3 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-2xl flex items-center justify-center text-gray-400 hover:text-[#312E81] shadow-md transition-colors">
-            <Heart size={18} />
-          </button>
+          <motion.button 
+            whileTap={{ scale: 0.8 }}
+            onClick={(e) => { e.preventDefault(); toggleFavorite(); }}
+            className={`absolute top-4 left-4 w-10 h-10 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-md transition-colors ${isFavorite ? 'bg-red-500 text-white' : 'bg-white/80 text-gray-400'}`}
+          >
+            <Heart size={20} fill={isFavorite ? "currentColor" : "none"} />
+          </motion.button>
         </div>
         
-        <CardContent className="p-4 text-right flex-1 flex flex-col justify-between" dir="rtl">
+        <CardContent className="p-5 text-right flex-1 flex flex-col justify-between" dir="rtl">
           <div>
-            <h3 className="text-sm font-bold text-[#1e293b] line-clamp-2 mb-3 leading-relaxed h-[40px] tracking-tight">{offer.title}</h3>
+            <h3 className="text-sm font-bold text-[#0f172a] line-clamp-2 mb-3 leading-relaxed h-[40px]">{offer.title}</h3>
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-xl font-black text-[#312E81]">{offer.newPrice} ر.س</span>
+              <span className="text-xl font-bold text-[#0f172a]">{offer.newPrice} ر.س</span>
               {offer.oldPrice && (
-                <span className="text-[11px] text-slate-400 line-through">{offer.oldPrice} ر.س</span>
+                <span className="text-[11px] text-gray-400 line-through font-medium">{offer.oldPrice} ر.س</span>
               )}
             </div>
           </div>
@@ -55,20 +78,23 @@ export function OfferCard({ offer, isAdmin, onDelete }: OfferCardProps) {
           <div className="space-y-3">
             <div className="flex gap-2">
               <Button 
-                onClick={() => offer.affiliateUrl && window.open(offer.affiliateUrl, '_blank')} 
-                className="flex-1 bg-[#312E81] hover:bg-[#1e1b4b] text-white text-xs h-11 rounded-2xl font-bold shadow-indigo-900/10 shadow-lg active:scale-95 transition-all"
+                asChild
+                className="flex-1 bg-[#0f172a] hover:bg-[#1e293b] text-white text-xs h-12 rounded-2xl font-bold active:scale-95 transition-all"
               >
-                اقتنص العرض
+                <a href={offer.affiliateUrl || '#'} target="_blank" rel="noopener noreferrer">اقتنص العرض</a>
               </Button>
-              <Button onClick={handleWhatsApp} variant="outline" className="w-11 h-11 p-0 border-indigo-50 bg-indigo-50/30 rounded-2xl hover:bg-indigo-50 active:scale-95 transition-all">
-                <MessageCircle size={20} className="text-[#312E81]" />
+              <Button onClick={handleWhatsApp} variant="outline" className="w-12 h-12 p-0 border-green-100 bg-green-50 rounded-2xl hover:bg-green-100 active:scale-95 transition-all">
+                <MessageCircle size={22} className="text-green-600" />
               </Button>
             </div>
             
-            <div className="flex items-center justify-center py-2 px-4 rounded-full border border-slate-100 bg-slate-50/50 text-[10px] text-slate-500 gap-2 hover:bg-indigo-50 hover:text-[#312E81] hover:border-indigo-100 transition-all cursor-pointer shadow-sm group">
-              <Share2 size={12} className="group-hover:scale-110 transition-transform" />
+            <motion.div 
+              whileTap={{ scale: 0.95 }}
+              className="flex items-center justify-center py-2 px-4 rounded-full border border-indigo-100 bg-white text-[10px] text-[#0f172a] gap-2 hover:bg-indigo-50 transition-colors cursor-pointer shadow-sm"
+            >
+              <Share2 size={14} />
               <span className="font-bold">مشاركة العرض</span>
-            </div>
+            </motion.div>
           </div>
           
           {isAdmin && (
