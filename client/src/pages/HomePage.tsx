@@ -10,6 +10,14 @@ export default function HomePage() {
   const [category, setCategory] = useState("all");
   const { data: offers, isLoading } = useOffers({ search, category });
 
+  const categories = [
+    { id: "all", label: "الكل" },
+    { id: "electronics", label: "إلكترونيات" },
+    { id: "perfumes", label: "عطور" },
+    { id: "fashion", label: "أزياء" },
+    { id: "home", label: "منزل" },
+  ];
+
   return (
     <div className="min-h-screen bg-[#F1F5F9] text-[#0f172a] pb-[140px]" dir="rtl">
       <header className="sticky top-0 z-50 bg-[#0f172a]/80 backdrop-blur-xl text-white border-b border-white/5">
@@ -22,7 +30,7 @@ export default function HomePage() {
             <Info size={18} />
           </motion.div>
         </div>
-        <div className="px-6 pb-4">
+        <div className="px-6 pb-4 flex flex-col gap-4">
           <div className="relative group">
             <input
               type="text"
@@ -32,6 +40,21 @@ export default function HomePage() {
               className="w-full bg-white/10 backdrop-blur-md text-white placeholder-white/30 text-sm h-12 pr-11 rounded-2xl border border-white/10 focus:ring-2 focus:ring-[#f97316]/50 transition-all outline-none"
             />
             <Search className="absolute right-4 top-3.5 text-[#f97316]" size={18} />
+          </div>
+          <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setCategory(cat.id)}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                  category === cat.id 
+                  ? "bg-[#f97316] text-white" 
+                  : "bg-white/10 text-white/60 hover:bg-white/20"
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
           </div>
         </div>
       </header>

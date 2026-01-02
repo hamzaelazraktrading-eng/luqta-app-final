@@ -13,12 +13,12 @@ export function BottomNav() {
   ];
 
   return (
-    <nav className="w-full bg-white/70 backdrop-blur-xl h-20 border-t border-gray-100 flex items-center justify-around px-4">
+    <nav className="w-full bg-[#1e1b4b] h-20 border-t border-white/10 flex items-center justify-around px-4">
       {navItems.map((item) => (
         <button 
           key={item.id}
           onClick={() => setLocation(item.id)} 
-          className={`flex flex-col items-center flex-1 py-3 transition-all duration-300 ${location === item.id ? 'text-[#f97316]' : 'text-[#0f172a]/40'}`}
+          className={`flex flex-col items-center flex-1 py-3 transition-all duration-300 ${location === item.id ? 'text-[#f97316]' : 'text-white/40'}`}
         >
           <motion.div whileTap={{ scale: 0.8 }}>{item.icon}</motion.div>
           <span className="text-[10px] mt-1 font-bold">{item.label}</span>

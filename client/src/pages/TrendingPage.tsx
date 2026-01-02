@@ -10,9 +10,12 @@ export default function TrendingPage() {
 
   return (
     <div className="min-h-screen bg-[#F1F5F9] pb-[140px] font-tajawal" dir="rtl">
-      <header className="bg-[#0f172a] text-white p-8 shadow-2xl rounded-b-[3rem] flex items-center justify-center gap-3">
-        <Flame className="text-[#f97316]" size={28} />
-        <h1 className="text-2xl font-bold">العروض الرائجة</h1>
+      <header className="bg-[#0f172a] text-white p-8 shadow-2xl rounded-b-[3rem] flex flex-col items-center justify-center gap-2">
+        <div className="flex items-center gap-3">
+          <Flame className="text-[#f97316]" size={28} />
+          <h1 className="text-2xl font-bold">رائج الآن</h1>
+        </div>
+        <p className="text-white/40 text-xs font-medium">أكثر العروض مشاهدة وطلباً في الساعات الأخيرة</p>
       </header>
 
       <main className="p-4 pt-8">

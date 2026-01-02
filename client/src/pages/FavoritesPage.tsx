@@ -17,9 +17,12 @@ export default function FavoritesPage() {
 
   return (
     <div className="min-h-screen bg-[#F1F5F9] pb-[140px] font-tajawal" dir="rtl">
-      <header className="bg-[#0f172a] text-white p-8 shadow-2xl rounded-b-[3rem] flex items-center justify-center gap-3">
-        <Heart className="text-red-500 fill-red-500" size={28} />
-        <h1 className="text-2xl font-bold">المفضلة</h1>
+      <header className="bg-[#0f172a] text-white p-8 shadow-2xl rounded-b-[3rem] flex flex-col items-center justify-center gap-2">
+        <div className="flex items-center gap-3">
+          <Heart className="text-red-500 fill-red-500" size={28} />
+          <h1 className="text-2xl font-bold">المفضلة</h1>
+        </div>
+        <p className="text-white/40 text-xs font-medium">عروضك التي حفظتها للعودة إليها لاحقاً</p>
       </header>
 
       <main className="p-4 pt-8">
