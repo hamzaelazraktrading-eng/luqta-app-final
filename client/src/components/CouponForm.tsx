@@ -3,12 +3,38 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { insertCouponSchema, type InsertCoupon, type Coupon } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useCreateCoupon, useUpdateCoupon } from "@/hooks/use-coupons";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { Loader2, Store, Ticket, Tag, Calendar, AlignLeft } from "lucide-react";
 
 export function CouponForm({ coupon, onSuccess }: { coupon?: Coupon, onSuccess?: () => void }) {
-  const createMutation = useCreateCoupon();
-  const updateMutation = useUpdateCoupon();
+  const { toast } = useToast();
+  
+  const createMutation = useMutation({
+    mutationFn: async (data: InsertCoupon) => {
+      const res = await apiRequest("POST", "/api/coupons", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/coupons"] });
+      toast({ title: "تم إضافة الكوبون بنجاح" });
+      if (onSuccess) onSuccess();
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async (data: Partial<InsertCoupon> & { id: number }) => {
+      const res = await apiRequest("PATCH", `/api/coupons/${data.id}`, data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/coupons"] });
+      toast({ title: "تم تحديث الكوبون بنجاح" });
+      if (onSuccess) onSuccess();
+    },
+  });
+
   const form = useForm<InsertCoupon>({
     resolver: zodResolver(insertCouponSchema),
     defaultValues: coupon ? {
@@ -33,7 +59,6 @@ export function CouponForm({ coupon, onSuccess }: { coupon?: Coupon, onSuccess?:
     } else {
       await createMutation.mutateAsync(formattedData);
     }
-    if (onSuccess) onSuccess();
   };
 
   const inputClasses = "bg-white border-slate-200 h-12 rounded-xl focus:ring-2 focus:ring-[#f97316]/20 transition-all text-sm pr-10 text-slate-900 placeholder:text-slate-400";

@@ -148,9 +148,13 @@ export default function OfferDetailPage() {
       </div>
 
       <Footer />
-      <BottomNav />
-      <div className="sticky bottom-16 z-[60] w-full px-4 mb-4">
-        <AdBanner type="content" />
+      <div className="sticky bottom-0 z-[100] w-full">
+        <BottomNav />
+        <div className="absolute bottom-20 left-0 right-0 px-4 pointer-events-none">
+          <div className="pointer-events-auto">
+            <AdBanner type="hero" />
+          </div>
+        </div>
       </div>
       <div className="fixed bottom-0 left-0 right-0 z-[100] bg-white/80 backdrop-blur-xl border-t border-slate-100 p-4 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
         <div className="max-w-screen-md mx-auto flex gap-4">
