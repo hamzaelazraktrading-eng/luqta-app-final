@@ -8,6 +8,7 @@ import TrendingPage from "@/pages/TrendingPage";
 import FavoritesPage from "@/pages/FavoritesPage";
 import CouponsPage from "@/pages/CouponsPage";
 import CategoryPage from "@/pages/CategoryPage";
+import OfferDetailPage from "@/pages/OfferDetailPage";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -18,6 +19,7 @@ function Router() {
       <Route path="/favorites" component={FavoritesPage} />
       <Route path="/coupons" component={CouponsPage} />
       <Route path="/category/:category" component={CategoryPage} />
+      <Route path="/offer/:id" component={OfferDetailPage} />
       <Route path="/admin" component={AdminPage} />
       <Route component={NotFound} />
     </Switch>

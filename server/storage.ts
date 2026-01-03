@@ -1,6 +1,6 @@
 import { db } from "./db";
-import { offers, type InsertOffer, type Offer } from "@shared/schema";
-import { eq, desc, ilike, or } from "drizzle-orm";
+import { offers, coupons, type InsertOffer, type Offer, type InsertCoupon, type Coupon } from "@shared/schema";
+import { eq, desc, ilike, or, gte } from "drizzle-orm";
 
 export interface IStorage {
   getOffers(search?: string, category?: string): Promise<Offer[]>;
@@ -8,6 +8,10 @@ export interface IStorage {
   createOffer(offer: InsertOffer): Promise<Offer>;
   updateOffer(id: number, offer: Partial<InsertOffer>): Promise<Offer>;
   deleteOffer(id: number): Promise<void>;
+  
+  getCoupons(): Promise<Coupon[]>;
+  createCoupon(coupon: InsertCoupon): Promise<Coupon>;
+  deleteCoupon(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -40,6 +44,19 @@ export class DatabaseStorage implements IStorage {
 
   async deleteOffer(id: number): Promise<void> {
     await db.delete(offers).where(eq(offers.id, id));
+  }
+
+  async getCoupons(): Promise<Coupon[]> {
+    return await db.select().from(coupons).where(gte(coupons.expiryDate, new Date())).orderBy(desc(coupons.expiryDate));
+  }
+
+  async createCoupon(insertCoupon: InsertCoupon): Promise<Coupon> {
+    const [coupon] = await db.insert(coupons).values(insertCoupon).returning();
+    return coupon;
+  }
+
+  async deleteCoupon(id: number): Promise<void> {
+    await db.delete(coupons).where(eq(coupons.id, id));
   }
 }
 

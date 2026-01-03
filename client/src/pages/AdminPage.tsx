@@ -1,8 +1,9 @@
 import { useOffers, useDeleteOffer } from "@/hooks/use-offers";
 import { OfferCard } from "@/components/OfferCard";
 import { OfferForm } from "@/components/OfferForm";
+import { CouponForm } from "@/components/CouponForm";
 import { useState } from "react";
-import { Loader2, Plus, LayoutDashboard, TrendingUp, Tag, LogOut } from "lucide-react";
+import { Loader2, Plus, LayoutDashboard, TrendingUp, Tag, LogOut, Ticket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "wouter";
@@ -10,7 +11,7 @@ import { useLocation } from "wouter";
 export default function AdminPage() {
   const { data: offers, isLoading } = useOffers();
   const deleteMutation = useDeleteOffer();
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState<"offer" | "coupon" | null>(null);
   const [, setLocation] = useLocation();
 
   const stats = [
@@ -39,6 +40,10 @@ export default function AdminPage() {
             <Tag size={22} />
             إدارة العروض
           </button>
+          <button className="w-full flex items-center gap-4 px-5 py-4 text-white/40 hover:bg-white/5 rounded-2xl transition-all font-bold">
+            <Ticket size={22} />
+            إدارة الكوبونات
+          </button>
         </nav>
 
         <Button 
@@ -58,15 +63,26 @@ export default function AdminPage() {
             <h1 className="text-4xl font-bold text-[#0f172a] tracking-tight">لوحة الإدارة</h1>
             <p className="text-slate-400 mt-2 font-medium">تحكم كامل في محتوى وعروض المنصة</p>
           </div>
-          <motion.div whileTap={{ scale: 0.95 }}>
-            <Button 
-              onClick={() => setShowForm(!showForm)} 
-              className="bg-[#f97316] hover:bg-[#ea580c] text-white font-bold h-14 px-8 rounded-2xl shadow-xl shadow-orange-500/20 transition-all gap-2"
-            >
-              <Plus className="h-5 w-5" />
-              إضافة لُقطة جديدة
-            </Button>
-          </motion.div>
+          <div className="flex gap-4">
+            <motion.div whileTap={{ scale: 0.95 }}>
+              <Button 
+                onClick={() => setShowForm(showForm === "coupon" ? null : "coupon")} 
+                className="bg-[#0f172a] hover:bg-[#1e293b] text-white font-bold h-14 px-8 rounded-2xl shadow-xl transition-all gap-2"
+              >
+                <Ticket className="h-5 w-5" />
+                إضافة كوبون
+              </Button>
+            </motion.div>
+            <motion.div whileTap={{ scale: 0.95 }}>
+              <Button 
+                onClick={() => setShowForm(showForm === "offer" ? null : "offer")} 
+                className="bg-[#f97316] hover:bg-[#ea580c] text-white font-bold h-14 px-8 rounded-2xl shadow-xl shadow-orange-500/20 transition-all gap-2"
+              >
+                <Plus className="h-5 w-5" />
+                إضافة لُقطة جديدة
+              </Button>
+            </motion.div>
+          </div>
         </header>
 
         {/* Stats Grid */}
@@ -96,10 +112,20 @@ export default function AdminPage() {
               initial={{ opacity: 0, height: 0, y: -20 }}
               animate={{ opacity: 1, height: "auto", y: 0 }}
               exit={{ opacity: 0, height: 0, y: -20 }}
-              className="mb-12"
+              className="mb-12 overflow-hidden"
             >
               <div className="bg-white p-10 rounded-[2.5rem] shadow-xl border border-slate-100">
-                <OfferForm onSuccess={() => setShowForm(false)} />
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-bold text-slate-900">
+                    {showForm === "offer" ? "إضافة عرض جديد" : "إضافة كوبون جديد"}
+                  </h2>
+                  <Button variant="ghost" onClick={() => setShowForm(null)} className="text-slate-400">إغلاق</Button>
+                </div>
+                {showForm === "offer" ? (
+                  <OfferForm onSuccess={() => setShowForm(null)} />
+                ) : (
+                  <CouponForm onSuccess={() => setShowForm(null)} />
+                )}
               </div>
             </motion.div>
           )}

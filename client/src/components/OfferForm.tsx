@@ -33,56 +33,56 @@ export function OfferForm({ offer, onSuccess }: { offer?: Offer, onSuccess?: () 
     if (onSuccess) onSuccess();
   };
 
-  const inputClasses = "bg-gray-50 border-gray-100 h-12 rounded-xl focus:ring-2 focus:ring-[#c5a059]/20 transition-all text-sm pr-10";
+  const inputClasses = "bg-white border-slate-200 h-12 rounded-xl focus:ring-2 focus:ring-[#f97316]/20 transition-all text-sm pr-10 text-slate-900 placeholder:text-slate-400";
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" dir="rtl">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="relative">
-          <Type className="absolute right-3 top-3.5 text-gray-400" size={18} />
+          <Type className="absolute right-3 top-3.5 text-slate-400" size={18} />
           <Input {...form.register("title")} className={inputClasses} placeholder="عنوان العرض (مثال: خصم 50% على آيفون)" />
         </div>
         
         <div className="relative">
-          <Tag className="absolute right-3 top-3.5 text-gray-400" size={18} />
+          <Tag className="absolute right-3 top-3.5 text-slate-400" size={18} />
           <select 
             {...form.register("category")} 
-            className="w-full bg-gray-50 border-gray-100 h-12 rounded-xl px-4 pr-10 focus:ring-2 focus:ring-[#c5a059]/20 transition-all text-sm appearance-none"
+            className="w-full bg-white border-slate-200 h-12 rounded-xl px-4 pr-10 focus:ring-2 focus:ring-[#f97316]/20 transition-all text-sm appearance-none text-slate-900"
           >
             <option value="electronics">إلكترونيات</option>
             <option value="perfumes">عطور</option>
             <option value="fashion">أزياء</option>
-            <option value="home">منزل</option>
+            <option value="home">المطبخ</option>
           </select>
         </div>
 
         <div className="relative">
-          <DollarSign className="absolute right-3 top-3.5 text-green-500" size={18} />
+          <DollarSign className="absolute right-3 top-3.5 text-green-600" size={18} />
           <Input {...form.register("newPrice")} className={inputClasses} placeholder="السعر الجديد (مثال: 199)" />
         </div>
 
         <div className="relative">
-          <DollarSign className="absolute right-3 top-3.5 text-gray-400" size={18} />
+          <DollarSign className="absolute right-3 top-3.5 text-slate-400" size={18} />
           <Input {...form.register("oldPrice")} className={inputClasses} placeholder="السعر قبل الخصم" />
         </div>
 
         <div className="relative">
-          <Store className="absolute right-3 top-3.5 text-gray-400" size={18} />
+          <Store className="absolute right-3 top-3.5 text-slate-400" size={18} />
           <Input {...form.register("storeName")} className={inputClasses} placeholder="اسم المتجر (أمازون، نون...)" />
         </div>
 
         <div className="relative">
-          <Tag className="absolute right-3 top-3.5 text-red-400" size={18} />
+          <Tag className="absolute right-3 top-3.5 text-red-500" size={18} />
           <Input {...form.register("discount")} className={inputClasses} placeholder="نسبة الخصم (مثال: 50)" />
         </div>
 
         <div className="relative md:col-span-2">
-          <ImageIcon className="absolute right-3 top-3.5 text-gray-400" size={18} />
-          <Input {...form.register("imageUrl")} className={inputClasses} placeholder="رابط صورة المنتج (Unsplash أو رابط مباشر)" />
+          <ImageIcon className="absolute right-3 top-3.5 text-slate-400" size={18} />
+          <Input {...form.register("imageUrl")} className={inputClasses} placeholder="رابط صورة المنتج (رابط مباشر)" />
         </div>
 
         <div className="relative md:col-span-2">
-          <LinkIcon className="absolute right-3 top-3.5 text-[#1a237e]" size={18} />
+          <LinkIcon className="absolute right-3 top-3.5 text-[#0f172a]" size={18} />
           <Input {...form.register("affiliateUrl")} className={inputClasses} placeholder="رابط شراء المنتج (رابط الأفلييت)" />
         </div>
       </div>

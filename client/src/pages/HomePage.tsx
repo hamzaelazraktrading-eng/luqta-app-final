@@ -4,7 +4,6 @@ import { OfferCard } from "@/components/OfferCard";
 import { Search, Loader2, Info } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BottomNav, AdBanner } from "@/components/Navigation";
-
 import { Footer } from "@/components/Footer";
 import { useLocation } from "wouter";
 
@@ -51,7 +50,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      <main className="max-w-screen-xl mx-auto px-4 pt-4">
+      <main className="max-w-screen-xl mx-auto px-3 pt-4">
         <AdBanner type="hero" />
         {isLoading ? (
           <div className="flex justify-center py-20"><Loader2 className="h-10 w-10 animate-spin text-[#f97316]" /></div>
@@ -59,7 +58,7 @@ export default function HomePage() {
           <motion.div 
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }} 
-            className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3" 
           >
             {offers?.map((offer) => <OfferCard key={offer.id} offer={offer} />)}
           </motion.div>
