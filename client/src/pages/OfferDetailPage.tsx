@@ -34,7 +34,7 @@ export default function OfferDetailPage() {
       <header className="bg-[#0f172a] text-white p-6 sticky top-0 z-50 shadow-lg">
         <button 
           onClick={() => setLocation("/")}
-          className="flex items-center gap-2 bg-[#f97316] px-4 py-2 rounded-xl font-bold text-xs"
+          className="flex items-center gap-2 bg-[#f97316] px-4 py-2 rounded-xl font-bold text-xs hover:bg-[#ea580c] transition-colors"
         >
           <ArrowRight size={16} />
           رجوع للرئيسية

@@ -25,7 +25,7 @@ export default function CategoryPage() {
       <header className="bg-[#0f172a] text-white p-8 shadow-2xl rounded-b-[3rem] relative flex flex-col items-center justify-center gap-4">
         <button 
           onClick={() => setLocation("/")}
-          className="absolute top-8 right-6 flex items-center gap-2 px-4 py-2 bg-white/10 rounded-xl border border-white/10 text-white/80 hover:bg-white/20 transition-all text-xs font-bold"
+          className="absolute top-8 right-6 flex items-center gap-2 px-4 py-2 bg-[#f97316] rounded-xl border border-white/10 text-white hover:bg-[#ea580c] transition-all text-xs font-bold shadow-lg"
         >
           <ArrowRight size={16} />
           رجوع للرئيسية

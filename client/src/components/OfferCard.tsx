@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { MessageCircle, Heart, Share2, ShoppingCart } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import { Link } from "wouter";
 
 interface OfferCardProps {
   offer: Offer;
@@ -19,7 +20,9 @@ export function OfferCard({ offer, isAdmin, onDelete }: OfferCardProps) {
     setIsFavorite(favorites.some((f: any) => f.id === offer.id));
   }, [offer.id]);
 
-  const toggleFavorite = () => {
+  const toggleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
     let newFavorites;
     if (isFavorite) {
@@ -31,7 +34,9 @@ export function OfferCard({ offer, isAdmin, onDelete }: OfferCardProps) {
     setIsFavorite(!isFavorite);
   };
 
-  const handleWhatsApp = () => {
+  const handleWhatsApp = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     const text = encodeURIComponent(`شاهد هذا العرض الرائع من لُقطة: ${offer.title}\n${offer.affiliateUrl || ''}`);
     window.open(`https://wa.me/?text=${text}`, '_blank');
   };
@@ -41,70 +46,81 @@ export function OfferCard({ offer, isAdmin, onDelete }: OfferCardProps) {
       <motion.div 
         whileHover={{ y: -4 }}
         whileTap={{ scale: 0.98 }}
-        className="h-full flex flex-col cursor-pointer"
+        className="w-full h-full cursor-pointer"
       >
-        <Card className="overflow-hidden bg-white/70 backdrop-blur-md border border-white h-full flex flex-col rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all duration-300">
-          <div className="relative aspect-[16/10] overflow-hidden group">
-            <motion.img 
+        <Card className="overflow-hidden bg-white border border-slate-100 flex flex-col h-full rounded-[20px] shadow-sm hover:shadow-md transition-all">
+          <div className="relative w-full aspect-square overflow-hidden bg-slate-50">
+            <img 
               src={offer.imageUrl} 
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              alt={offer.title}
+              className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.src = "https://placehold.co/600x400/0f172a/f97316?text=Luqta+Offer";
               }}
             />
-            <div className="absolute top-4 right-4">
-              {offer.discount && (
-                <div className="bg-[#f97316] text-white text-[10px] font-bold px-3 py-1.5 rounded-2xl shadow-lg">
-                  خصم {offer.discount}%
-                </div>
-              )}
-            </div>
-            <motion.button 
-              whileTap={{ scale: 0.8 }}
+            {offer.discount && (
+              <div className="absolute top-2 right-2 bg-red-500 text-white text-[9px] font-black px-2 py-0.5 rounded-lg shadow-lg">
+                {offer.discount}% خصم
+              </div>
+            )}
+            <button 
               onClick={toggleFavorite}
-              className={`absolute top-4 left-4 w-10 h-10 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-md transition-colors ${isFavorite ? 'bg-red-500 text-white' : 'bg-white/80 text-gray-400'}`}
+              className={`absolute top-2 left-2 p-1.5 rounded-full backdrop-blur-md transition-colors ${isFavorite ? 'bg-red-50 text-red-500' : 'bg-black/10 text-white hover:bg-white hover:text-red-500'}`}
             >
-              <Heart size={20} fill={isFavorite ? "currentColor" : "none"} />
-            </motion.button>
+              <Heart size={14} fill={isFavorite ? "currentColor" : "none"} />
+            </button>
           </div>
-          
-          <CardContent className="p-4 text-right flex-1 flex flex-col justify-between" dir="rtl">
+
+          <CardContent className="p-3 flex-1 flex flex-col justify-between text-right" dir="rtl">
             <div>
-              <h3 className="text-sm font-bold text-[#0f172a] line-clamp-2 mb-1.5 leading-tight h-[40px] overflow-hidden">{offer.title}</h3>
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-lg font-bold text-[#0f172a]">{offer.newPrice} ر.س</span>
+              <span className="text-[8px] font-bold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded mb-1.5 inline-block">
+                {offer.storeName || "متجر موثوق"}
+              </span>
+              <h3 className="text-[11px] font-bold text-slate-800 line-clamp-2 mb-2 leading-tight h-8">
+                {offer.title}
+              </h3>
+
+              <div className="flex flex-wrap items-baseline gap-1 mb-3">
+                <span className="text-sm font-black text-[#0f172a]">{offer.newPrice} ر.س</span>
                 {offer.oldPrice && (
-                  <span className="text-[10px] text-gray-400 line-through font-medium">{offer.oldPrice} ر.س</span>
+                  <span className="text-[9px] text-slate-400 line-through decoration-red-400/30">{offer.oldPrice} ر.س</span>
                 )}
               </div>
             </div>
-            
-            <div className="space-y-2.5">
-              <div className="flex gap-2 w-full">
+
+            <div className="flex flex-col gap-2 pt-2 border-t border-slate-50">
+              <div className="flex gap-1.5">
                 <Button 
-                  asChild
-                  className="flex-[3] bg-[#0f172a] hover:bg-[#1e293b] text-white text-xs h-10 rounded-2xl font-bold active:scale-95 transition-all"
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); offer.affiliateUrl && window.open(offer.affiliateUrl, '_blank'); }}
+                  className="flex-1 bg-[#0f172a] hover:bg-[#f97316] text-white h-8 rounded-lg text-[10px] font-bold gap-1 transition-colors"
                 >
-                  <a href={offer.affiliateUrl || '#'} target="_blank" rel="noopener noreferrer">اقتنص العرض</a>
+                  <ShoppingCart size={12} />
+                  اقتنص
                 </Button>
-                <Button onClick={handleWhatsApp} variant="outline" className="flex-1 h-10 p-0 border-green-100 bg-green-50 rounded-2xl hover:bg-green-100 active:scale-95 transition-all flex items-center justify-center">
-                  <MessageCircle size={20} className="text-green-600" />
+                <Button 
+                  onClick={handleWhatsApp}
+                  variant="outline" 
+                  className="w-8 h-8 p-0 border-green-100 bg-green-50 hover:bg-green-100 text-green-600 rounded-lg"
+                >
+                  <MessageCircle size={16} />
                 </Button>
               </div>
-              
-              <motion.div 
-                whileTap={{ scale: 0.95 }}
-                className="flex items-center justify-center py-2 px-4 rounded-full border border-indigo-100 bg-white text-[10px] text-[#0f172a] gap-2 hover:bg-indigo-50 transition-colors cursor-pointer shadow-sm"
-              >
-                <Share2 size={12} />
-                <span className="font-bold">مشاركة العرض</span>
-              </motion.div>
+
+              <div className="flex gap-1.5">
+                 <Button 
+                  variant="outline"
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                  className="flex-1 h-7 border-slate-100 text-slate-500 rounded-lg text-[9px] font-bold gap-1"
+                >
+                  <Share2 size={10} />
+                  مشاركة
+                </Button>
+                {isAdmin && (
+                  <Button onClick={(e) => { e.preventDefault(); e.stopPropagation(); onDelete?.(); }} variant="ghost" className="h-7 px-2 text-red-500 hover:bg-red-50 rounded-lg text-[9px]">حذف</Button>
+                )}
+              </div>
             </div>
-            
-            {isAdmin && (
-              <Button onClick={(e) => { e.preventDefault(); e.stopPropagation(); onDelete?.(); }} variant="ghost" className="mt-3 text-[9px] text-red-500 h-7 w-full hover:bg-red-50 rounded-xl">حذف العرض</Button>
-            )}
           </CardContent>
         </Card>
       </motion.div>
