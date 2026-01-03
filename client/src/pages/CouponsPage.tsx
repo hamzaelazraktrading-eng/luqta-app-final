@@ -40,15 +40,19 @@ export default function CouponsPage() {
   return (
     <div className="min-h-screen bg-[#F1F5F9] font-tajawal" dir="rtl">
       <header className="bg-[#0f172a] text-white p-8 shadow-2xl rounded-b-[3rem] text-center relative">
-        <button 
-          onClick={() => setLocation("/")}
-          className="absolute top-8 right-6 flex items-center gap-2 px-4 py-2 bg-[#f97316] rounded-xl border border-white/10 text-white hover:bg-[#ea580c] transition-all text-xs font-bold shadow-lg"
-        >
-          <ArrowRight size={16} />
-          رجوع للرئيسية
-        </button>
-        <h1 className="text-3xl font-bold text-[#f97316]">كوبونات اليوم</h1>
-        <p className="text-white/50 text-sm mt-2 font-medium">أكواد خصم حصرية بانتظارك</p>
+        <div className="absolute top-8 right-6">
+          <button 
+            onClick={() => setLocation("/")}
+            className="flex items-center gap-2 px-4 py-2 bg-[#f97316] rounded-xl border border-white/10 text-white hover:bg-[#ea580c] transition-all text-xs font-bold shadow-lg"
+          >
+            <ArrowRight size={16} />
+            رجوع للرئيسية
+          </button>
+        </div>
+        <div className="mt-12">
+          <h1 className="text-3xl font-bold text-[#f97316]">كوبونات اليوم</h1>
+          <p className="text-white/50 text-sm mt-2 font-medium">أكواد خصم حصرية بانتظارك</p>
+        </div>
       </header>
 
       <main className="p-6 space-y-6 -mt-6 max-w-screen-xl mx-auto">

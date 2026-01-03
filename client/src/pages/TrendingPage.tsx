@@ -14,18 +14,22 @@ export default function TrendingPage() {
   return (
     <div className="min-h-screen bg-[#F1F5F9] font-tajawal" dir="rtl">
       <header className="bg-[#0f172a] text-white p-8 shadow-2xl rounded-b-[3rem] flex flex-col items-center justify-center gap-4 relative">
-        <button 
-          onClick={() => setLocation("/")}
-          className="absolute top-8 right-6 flex items-center gap-2 px-4 py-2 bg-white/10 rounded-xl border border-white/10 text-white/80 hover:bg-white/20 transition-all text-xs font-bold"
-        >
-          <ArrowRight size={16} />
-          رجوع للرئيسية
-        </button>
-        <div className="flex items-center gap-3">
-          <Flame className="text-[#f97316]" size={28} />
-          <h1 className="text-2xl font-bold">رائج الآن</h1>
+        <div className="absolute top-8 right-6">
+          <button 
+            onClick={() => setLocation("/")}
+            className="flex items-center gap-2 px-4 py-2 bg-[#f97316] rounded-xl border border-white/10 text-white hover:bg-[#ea580c] transition-all text-xs font-bold shadow-lg"
+          >
+            <ArrowRight size={16} />
+            رجوع للرئيسية
+          </button>
         </div>
-        <p className="text-white/40 text-xs font-medium">أكثر العروض مشاهدة وطلباً في الساعات الأخيرة</p>
+        <div className="mt-12 flex flex-col items-center gap-3">
+          <div className="flex items-center gap-3">
+            <Flame className="text-[#f97316]" size={28} />
+            <h1 className="text-2xl font-bold">رائج الآن</h1>
+          </div>
+          <p className="text-white/40 text-xs font-medium">أكثر العروض مشاهدة وطلباً في الساعات الأخيرة</p>
+        </div>
       </header>
 
       <main className="p-4 pt-8 max-w-screen-xl mx-auto">

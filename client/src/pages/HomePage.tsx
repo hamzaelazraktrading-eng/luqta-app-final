@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useOffers } from "@/hooks/use-offers";
 import { OfferCard } from "@/components/OfferCard";
-import { Search, Loader2, Info } from "lucide-react";
+import { Search, Loader2, Info, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BottomNav, AdBanner } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
@@ -17,7 +17,8 @@ export default function HomePage() {
     { id: "electronics", label: "إلكترونيات" },
     { id: "perfumes", label: "عطور" },
     { id: "fashion", label: "أزياء" },
-    { id: "home", label: "المطبخ" },
+    { id: "home", label: "المنزل والمطبخ" },
+    { id: "accessories", label: "الساعات والإكسسوارات" },
   ];
 
   return (
@@ -66,10 +67,37 @@ export default function HomePage() {
       </main>
 
       <div className="mt-8">
+        <BottomNav />
         <AdBanner type="footer" />
         <Footer />
-        <BottomNav />
       </div>
+
+      <BackToTop />
     </div>
+  );
+}
+
+function BackToTop() {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const toggleVisible = () => setVisible(window.scrollY > 500);
+    window.addEventListener("scroll", toggleVisible);
+    return () => window.removeEventListener("scroll", toggleVisible);
+  }, []);
+
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.button
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.5 }}
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="fixed bottom-10 left-6 z-[90] w-12 h-12 bg-[#0f172a] text-white rounded-2xl shadow-xl flex items-center justify-center hover:bg-[#f97316] transition-colors"
+        >
+          <ChevronRight className="rotate-90" size={24} />
+        </motion.button>
+      )}
+    </AnimatePresence>
   );
 }

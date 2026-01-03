@@ -63,20 +63,20 @@ export default function AdminPage() {
             <h1 className="text-4xl font-bold text-[#0f172a] tracking-tight">لوحة الإدارة</h1>
             <p className="text-slate-400 mt-2 font-medium">تحكم كامل في محتوى وعروض المنصة</p>
           </div>
-          <div className="flex gap-4">
-            <motion.div whileTap={{ scale: 0.95 }}>
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+            <motion.div whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
               <Button 
                 onClick={() => setShowForm(showForm === "coupon" ? null : "coupon")} 
-                className="bg-[#0f172a] hover:bg-[#1e293b] text-white font-bold h-14 px-8 rounded-2xl shadow-xl transition-all gap-2"
+                className="w-full sm:w-auto bg-[#0f172a] hover:bg-[#1e293b] text-white font-bold h-14 px-8 rounded-2xl shadow-xl transition-all gap-2"
               >
                 <Ticket className="h-5 w-5" />
                 إضافة كوبون
               </Button>
             </motion.div>
-            <motion.div whileTap={{ scale: 0.95 }}>
+            <motion.div whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
               <Button 
                 onClick={() => setShowForm(showForm === "offer" ? null : "offer")} 
-                className="bg-[#f97316] hover:bg-[#ea580c] text-white font-bold h-14 px-8 rounded-2xl shadow-xl shadow-orange-500/20 transition-all gap-2"
+                className="w-full sm:w-auto bg-[#f97316] hover:bg-[#ea580c] text-white font-bold h-14 px-8 rounded-2xl shadow-xl shadow-orange-500/20 transition-all gap-2"
               >
                 <Plus className="h-5 w-5" />
                 إضافة لُقطة جديدة
