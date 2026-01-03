@@ -68,7 +68,9 @@ export default function HomePage() {
 
       <div className="mt-8">
         <BottomNav />
-        <AdBanner type="footer" />
+        <div className="sticky bottom-16 z-[60] w-full px-4 mb-4">
+          <AdBanner type="hero" />
+        </div>
         <Footer />
       </div>
 

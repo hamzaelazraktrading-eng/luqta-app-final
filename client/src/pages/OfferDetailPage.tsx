@@ -149,8 +149,9 @@ export default function OfferDetailPage() {
 
       <Footer />
       <BottomNav />
-
-      {/* Floating Sticky CTA */}
+      <div className="sticky bottom-16 z-[60] w-full px-4 mb-4">
+        <AdBanner type="content" />
+      </div>
       <div className="fixed bottom-0 left-0 right-0 z-[100] bg-white/80 backdrop-blur-xl border-t border-slate-100 p-4 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
         <div className="max-w-screen-md mx-auto flex gap-4">
           <Button 

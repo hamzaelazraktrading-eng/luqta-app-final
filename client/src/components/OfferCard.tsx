@@ -72,53 +72,39 @@ export function OfferCard({ offer, isAdmin, onDelete }: OfferCardProps) {
             </button>
           </div>
 
-          <CardContent className="p-3 flex-1 flex flex-col justify-between text-right" dir="rtl">
+          <CardContent className="p-2 flex-1 flex flex-col justify-between text-right" dir="rtl">
             <div>
-              <span className="text-[8px] font-bold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded mb-1.5 inline-block">
+              <span className="text-[7px] font-bold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded mb-1 inline-block">
                 {offer.storeName || "متجر موثوق"}
               </span>
-              <h3 className="text-[11px] font-bold text-slate-800 line-clamp-2 mb-2 leading-tight h-8">
+              <h3 className="text-[10px] font-bold text-slate-800 line-clamp-1 mb-1 leading-tight">
                 {offer.title}
               </h3>
 
-              <div className="flex flex-wrap items-baseline gap-1 mb-3">
-                <span className="text-sm font-black text-[#0f172a]">{offer.newPrice} ر.س</span>
+              <div className="flex items-baseline gap-1 mb-2">
+                <span className="text-xs font-black text-[#0f172a]">{offer.newPrice} ر.س</span>
                 {offer.oldPrice && (
-                  <span className="text-[9px] text-slate-400 line-through decoration-red-400/30">{offer.oldPrice} ر.س</span>
+                  <span className="text-[8px] text-slate-400 line-through decoration-red-400/30">{offer.oldPrice} ر.س</span>
                 )}
               </div>
             </div>
 
-            <div className="flex flex-col gap-2 pt-2 border-t border-slate-50">
-              <div className="flex gap-1.5">
+            <div className="flex flex-col gap-1.5 pt-1.5 border-t border-slate-50">
+              <div className="flex gap-1">
                 <Button 
                   onClick={(e) => { e.preventDefault(); e.stopPropagation(); offer.affiliateUrl && window.open(offer.affiliateUrl, '_blank'); }}
-                  className="flex-1 bg-[#0f172a] hover:bg-[#f97316] text-white h-8 rounded-lg text-[10px] font-bold gap-1 transition-colors"
+                  className="flex-1 bg-[#0f172a] hover:bg-[#f97316] text-white h-7 rounded-lg text-[9px] font-bold gap-1 transition-colors"
                 >
-                  <ShoppingCart size={12} />
+                  <ShoppingCart size={10} />
                   اقتنص
                 </Button>
                 <Button 
                   onClick={handleWhatsApp}
                   variant="outline" 
-                  className="w-8 h-8 p-0 border-green-100 bg-green-50 hover:bg-green-100 text-green-600 rounded-lg"
+                  className="w-7 h-7 p-0 border-green-100 bg-green-50 hover:bg-green-100 text-green-600 rounded-lg"
                 >
-                  <MessageCircle size={16} />
+                  <MessageCircle size={14} />
                 </Button>
-              </div>
-
-              <div className="flex gap-1.5">
-                 <Button 
-                  variant="outline"
-                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-                  className="flex-1 h-7 border-slate-100 text-slate-500 rounded-lg text-[9px] font-bold gap-1"
-                >
-                  <Share2 size={10} />
-                  مشاركة
-                </Button>
-                {isAdmin && (
-                  <Button onClick={(e) => { e.preventDefault(); e.stopPropagation(); onDelete?.(); }} variant="ghost" className="h-7 px-2 text-red-500 hover:bg-red-50 rounded-lg text-[9px]">حذف</Button>
-                )}
               </div>
             </div>
           </CardContent>
