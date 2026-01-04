@@ -3,15 +3,35 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { insertOfferSchema, type InsertOffer, type Offer } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useCreateOffer, useUpdateOffer } from "@/hooks/use-offers";
-import { Loader2, Tag, DollarSign, Store, Link as LinkIcon, Image as ImageIcon, Type, AlignLeft } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2, Tag, Image as ImageIcon, Link as LinkIcon, Info, LayoutGrid, DollarSign, Type, Store } from "lucide-react";
 
 export function OfferForm({ offer, onSuccess }: { offer?: Offer, onSuccess?: () => void }) {
-  const createMutation = useCreateOffer();
-  const updateMutation = useUpdateOffer();
+  const { toast } = useToast();
+  
+  const mutation = useMutation({
+    mutationFn: async (data: InsertOffer) => {
+      const res = offer 
+        ? await apiRequest("PATCH", `/api/offers/${offer.id}`, data)
+        : await apiRequest("POST", "/api/offers", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/offers"] });
+      toast({ title: offer ? "تم تحديث العرض بنجاح" : "تم إضافة العرض بنجاح" });
+      if (onSuccess) onSuccess();
+    },
+  });
+
   const form = useForm<InsertOffer>({
     resolver: zodResolver(insertOfferSchema),
-    defaultValues: offer || {
+    defaultValues: offer ? {
+      ...offer,
+      galleryUrls: offer.galleryUrls || [],
+    } : {
       title: "",
       description: "",
       longDescription: "",
@@ -26,31 +46,21 @@ export function OfferForm({ offer, onSuccess }: { offer?: Offer, onSuccess?: () 
     },
   });
 
-  const onSubmit = async (data: InsertOffer) => {
-    if (offer) {
-      await updateMutation.mutateAsync({ id: offer.id, ...data });
-    } else {
-      await createMutation.mutateAsync(data);
-    }
-    if (onSuccess) onSuccess();
-  };
-
-  const inputClasses = "bg-white border-slate-200 h-12 rounded-xl focus:ring-2 focus:ring-[#f97316]/20 transition-all text-sm pr-10 text-slate-900 placeholder:text-slate-400";
-  const textAreaClasses = "bg-white border-slate-200 rounded-xl focus:ring-2 focus:ring-[#f97316]/20 transition-all text-sm p-4 text-slate-900 placeholder:text-slate-400 min-h-[120px]";
+  const inputClasses = "bg-slate-50 border-slate-200 h-12 rounded-xl focus:ring-2 focus:ring-orange-500/20 transition-all text-sm pr-10 text-slate-900 placeholder:text-slate-400";
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" dir="rtl">
+    <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))} className="space-y-6" dir="rtl">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="relative">
           <Type className="absolute right-3 top-3.5 text-slate-400" size={18} />
-          <Input {...form.register("title")} className={inputClasses} placeholder="عنوان العرض (مثال: خصم 50% على آيفون)" />
+          <Input {...form.register("title")} className={inputClasses} placeholder="عنوان العرض" />
         </div>
-        
+
         <div className="relative">
-          <Tag className="absolute right-3 top-3.5 text-slate-400" size={18} />
+          <LayoutGrid className="absolute right-3 top-3.5 text-slate-400" size={18} />
           <select 
             {...form.register("category")} 
-            className="w-full bg-white border-slate-200 h-12 rounded-xl px-4 pr-10 focus:ring-2 focus:ring-[#f97316]/20 transition-all text-sm appearance-none text-slate-900"
+            className={`${inputClasses} w-full appearance-none pr-10 bg-slate-50`}
           >
             <option value="electronics">إلكترونيات</option>
             <option value="perfumes">عطور</option>
@@ -60,78 +70,56 @@ export function OfferForm({ offer, onSuccess }: { offer?: Offer, onSuccess?: () 
           </select>
         </div>
 
-        <div className="relative md:col-span-2">
-          <textarea 
-            {...form.register("description")} 
-            className="w-full bg-white border-slate-200 rounded-xl focus:ring-2 focus:ring-[#f97316]/20 transition-all text-sm p-4 text-slate-900 placeholder:text-slate-400 min-h-[80px]" 
-            placeholder="وصف قصير للعرض..."
-          />
-        </div>
-
-        <div className="relative md:col-span-2">
-          <textarea 
-            {...form.register("longDescription")} 
-            className={textAreaClasses} 
-            placeholder="وصف تفصيلي للعرض (يظهر في صفحة التفاصيل)..."
-          />
-        </div>
-
         <div className="relative">
-          <DollarSign className="absolute right-3 top-3.5 text-green-600" size={18} />
-          <Input {...form.register("newPrice")} className={inputClasses} placeholder="السعر الجديد (مثال: 199)" />
+          <DollarSign className="absolute right-3 top-3.5 text-slate-400" size={18} />
+          <Input {...form.register("newPrice")} className={inputClasses} placeholder="السعر الجديد (مثال: 100)" />
         </div>
 
         <div className="relative">
           <DollarSign className="absolute right-3 top-3.5 text-slate-400" size={18} />
-          <Input {...form.register("oldPrice")} className={inputClasses} placeholder="السعر قبل الخصم" />
+          <Input {...form.register("oldPrice")} className={inputClasses} placeholder="السعر القديم (اختياري)" />
         </div>
 
         <div className="relative">
           <Store className="absolute right-3 top-3.5 text-slate-400" size={18} />
-          <Input {...form.register("storeName")} className={inputClasses} placeholder="اسم المتجر (أمازون، نون...)" />
+          <Input {...form.register("storeName")} className={inputClasses} placeholder="اسم المتجر" />
         </div>
 
         <div className="relative">
-          <Tag className="absolute right-3 top-3.5 text-red-500" size={18} />
-          <Input {...form.register("discount")} className={inputClasses} placeholder="نسبة الخصم (مثال: 50)" />
+          <Tag className="absolute right-3 top-3.5 text-slate-400" size={18} />
+          <Input {...form.register("discount")} className={inputClasses} placeholder="نسبة الخصم" />
         </div>
 
         <div className="relative md:col-span-2">
           <ImageIcon className="absolute right-3 top-3.5 text-slate-400" size={18} />
-          <Input {...form.register("imageUrl")} className={inputClasses} placeholder="رابط الصورة الرئيسية (رابط مباشر)" />
-        </div>
-
-        <div className="relative md:col-span-2 space-y-2">
-          <div className="flex items-center gap-2 text-slate-500 text-xs font-bold mb-2">
-            <ImageIcon size={14} />
-            <span>صور إضافية لمعرض الصور (روابط مباشرة مفصولة بفاصلة)</span>
-          </div>
-          <Input 
-            className={inputClasses} 
-            placeholder="link1.jpg, link2.jpg, link3.jpg"
-            onChange={(e) => {
-              const urls = e.target.value.split(',').map(u => u.trim()).filter(u => u !== "");
-              form.setValue("galleryUrls", urls);
-            }}
-          />
+          <Input {...form.register("imageUrl")} className={inputClasses} placeholder="رابط صورة المنتج" />
         </div>
 
         <div className="relative md:col-span-2">
-          <LinkIcon className="absolute right-3 top-3.5 text-[#0f172a]" size={18} />
-          <Input {...form.register("affiliateUrl")} className={inputClasses} placeholder="رابط شراء المنتج (رابط الأفلييت)" />
+          <LinkIcon className="absolute right-3 top-3.5 text-slate-400" size={18} />
+          <Input {...form.register("affiliateUrl")} className={inputClasses} placeholder="رابط المتجر (الأفيلييت)" />
+        </div>
+
+        <div className="relative md:col-span-2">
+          <Info className="absolute right-3 top-3.5 text-slate-400" size={18} />
+          <Input {...form.register("description")} className={inputClasses} placeholder="وصف قصير" />
+        </div>
+
+        <div className="relative md:col-span-2">
+          <Textarea 
+            {...form.register("longDescription")} 
+            className="bg-slate-50 border-slate-200 min-h-[120px] rounded-xl text-slate-900 pr-4" 
+            placeholder="وصف تفصيلي للعرض" 
+          />
         </div>
       </div>
 
       <Button 
         type="submit" 
-        className="w-full h-14 bg-[#0f172a] hover:bg-[#1e293b] text-white rounded-xl font-bold text-lg shadow-xl shadow-blue-900/10 active:scale-95 transition-all"
-        disabled={createMutation.isPending || updateMutation.isPending}
+        className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-black text-lg shadow-xl active:scale-95 transition-all"
+        disabled={mutation.isPending}
       >
-        {createMutation.isPending || updateMutation.isPending ? (
-          <Loader2 className="animate-spin" />
-        ) : (
-          offer ? "تحديث العرض" : "نشر العرض الآن"
-        )}
+        {mutation.isPending ? <Loader2 className="animate-spin" /> : (offer ? "تحديث العرض" : "إضافة لُقطة جديدة")}
       </Button>
     </form>
   );

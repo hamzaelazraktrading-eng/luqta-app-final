@@ -1,46 +1,40 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* Deep Navy Blue Background */
-  --background: 216 65% 11%;
-  /* Light text */
-  --foreground: 210 40% 98%;
+  /* Premium Slate & Indigo Palette */
+  --background: 210 40% 98%;
+  --foreground: 222 47% 11%;
 
-  /* Royal Gold */
-  --primary: 46 65% 52%;
-  --primary-foreground: 216 65% 11%;
+  --primary: 24 100% 50%; /* Pure Orange */
+  --primary-foreground: 210 40% 98%;
 
-  /* Lighter Navy for Cards */
-  --card: 217 50% 16%;
-  --card-foreground: 210 40% 98%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
 
-  --popover: 217 50% 16%;
-  --popover-foreground: 210 40% 98%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
 
-  --secondary: 217 33% 25%;
+  --secondary: 222 47% 11%; /* Deep Indigo/Slate */
   --secondary-foreground: 210 40% 98%;
 
-  --muted: 217 33% 20%;
-  --muted-foreground: 215 20% 65%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
 
-  --accent: 46 65% 52%;
-  --accent-foreground: 216 65% 11%;
+  --accent: 24 100% 50%;
+  --accent-foreground: 222 47% 11%;
 
-  --destructive: 0 84% 60%;
+  --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 210 40% 98%;
 
-  --border: 217 33% 25%;
-  --input: 217 33% 25%;
-  --ring: 46 65% 52%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 24 100% 50%;
 
-  --radius: 0.75rem;
-
-  --font-heading: 'Cairo', sans-serif;
-  --font-body: 'Tajawal', sans-serif;
+  --radius: 1.25rem;
 }
 
 @layer base {
@@ -50,47 +44,28 @@
   
   html {
     direction: rtl;
+    scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-background text-foreground;
-    font-family: var(--font-body);
+    @apply bg-slate-50 text-slate-900;
+    font-family: 'Tajawal', sans-serif !important;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading);
-    @apply font-bold tracking-tight;
+    font-family: 'Tajawal', sans-serif !important;
+    @apply font-black tracking-tight;
   }
 }
 
-/* Custom Scrollbar for that premium feel */
-::-webkit-scrollbar {
-  width: 10px;
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-::-webkit-scrollbar-track {
-  background: hsl(var(--background));
-}
-
-::-webkit-scrollbar-thumb {
-  background: hsl(var(--secondary));
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--primary));
-}
-
-.glass-effect {
-  @apply bg-card/80 backdrop-blur-md border border-white/5;
-}
-
-.gold-gradient {
-  background: linear-gradient(135deg, #d4af37 0%, #f3e5ab 50%, #d4af37 100%);
-}
-
-.text-gold-gradient {
-  background: linear-gradient(135deg, #d4af37 0%, #f3e5ab 50%, #d4af37 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.font-tajawal {
+  font-family: 'Tajawal', sans-serif !important;
 }

@@ -27,6 +27,13 @@ export const coupons = pgTable("coupons", {
   expiryDate: timestamp("expiry_date").notNull(),
 });
 
+export const notifications = pgTable("notifications", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  message: text("message").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertOfferSchema = createInsertSchema(offers).omit({
   id: true,
   createdAt: true,
@@ -36,7 +43,14 @@ export const insertCouponSchema = createInsertSchema(coupons).omit({
   id: true,
 });
 
+export const insertNotificationSchema = createInsertSchema(notifications).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type Offer = typeof offers.$inferSelect;
 export type InsertOffer = z.infer<typeof insertOfferSchema>;
 export type Coupon = typeof coupons.$inferSelect;
 export type InsertCoupon = z.infer<typeof insertCouponSchema>;
+export type Notification = typeof notifications.$inferSelect;
+export type InsertNotification = z.infer<typeof insertNotificationSchema>;

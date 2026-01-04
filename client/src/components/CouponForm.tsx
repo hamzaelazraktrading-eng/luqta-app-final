@@ -11,26 +11,16 @@ import { Loader2, Store, Ticket, Tag, Calendar, AlignLeft } from "lucide-react";
 export function CouponForm({ coupon, onSuccess }: { coupon?: Coupon, onSuccess?: () => void }) {
   const { toast } = useToast();
   
-  const createMutation = useMutation({
+  const mutation = useMutation({
     mutationFn: async (data: InsertCoupon) => {
-      const res = await apiRequest("POST", "/api/coupons", data);
+      const res = coupon 
+        ? await apiRequest("PATCH", `/api/coupons/${coupon.id}`, data)
+        : await apiRequest("POST", "/api/coupons", data);
       return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/coupons"] });
-      toast({ title: "تم إضافة الكوبون بنجاح" });
-      if (onSuccess) onSuccess();
-    },
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: async (data: Partial<InsertCoupon> & { id: number }) => {
-      const res = await apiRequest("PATCH", `/api/coupons/${data.id}`, data);
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/coupons"] });
-      toast({ title: "تم تحديث الكوبون بنجاح" });
+      toast({ title: coupon ? "تم تحديث الكوبون بنجاح" : "تم إضافة الكوبون بنجاح" });
       if (onSuccess) onSuccess();
     },
   });
@@ -49,22 +39,10 @@ export function CouponForm({ coupon, onSuccess }: { coupon?: Coupon, onSuccess?:
     },
   });
 
-  const onSubmit = async (data: InsertCoupon) => {
-    const formattedData = {
-      ...data,
-      expiryDate: new Date(data.expiryDate)
-    };
-    if (coupon) {
-      await updateMutation.mutateAsync({ id: coupon.id, ...formattedData });
-    } else {
-      await createMutation.mutateAsync(formattedData);
-    }
-  };
-
-  const inputClasses = "bg-white border-slate-200 h-12 rounded-xl focus:ring-2 focus:ring-[#f97316]/20 transition-all text-sm pr-10 text-slate-900 placeholder:text-slate-400";
+  const inputClasses = "bg-slate-50 border-slate-200 h-12 rounded-xl focus:ring-2 focus:ring-orange-500/20 transition-all text-sm pr-10 text-slate-900 placeholder:text-slate-400";
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" dir="rtl">
+    <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))} className="space-y-6" dir="rtl">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="relative">
           <Store className="absolute right-3 top-3.5 text-slate-400" size={18} />
@@ -98,10 +76,10 @@ export function CouponForm({ coupon, onSuccess }: { coupon?: Coupon, onSuccess?:
 
       <Button 
         type="submit" 
-        className="w-full h-14 bg-[#0f172a] hover:bg-[#1e293b] text-white rounded-xl font-bold text-lg shadow-xl shadow-indigo-900/10 active:scale-95 transition-all"
-        disabled={createMutation.isPending || updateMutation.isPending}
+        className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-black text-lg shadow-xl active:scale-95 transition-all"
+        disabled={mutation.isPending}
       >
-        {createMutation.isPending || updateMutation.isPending ? (
+        {mutation.isPending ? (
           <Loader2 className="animate-spin" />
         ) : (
           coupon ? "تحديث الكوبون" : "إضافة الكوبون"
