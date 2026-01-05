@@ -9,6 +9,7 @@ import FavoritesPage from "@/pages/FavoritesPage";
 import CouponsPage from "@/pages/CouponsPage";
 import CategoryPage from "@/pages/CategoryPage";
 import OfferDetailPage from "@/pages/OfferDetailPage";
+import PrivacyPage from "@/pages/Privacypage"; // إضافة استيراد صفحة الخصوصية
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -20,6 +21,7 @@ function Router() {
       <Route path="/coupons" component={CouponsPage} />
       <Route path="/category/:category" component={CategoryPage} />
       <Route path="/offer/:id" component={OfferDetailPage} />
+      <Route path="/privacy" component={PrivacyPage} /> {/* إضافة مسار الخصوصية */}
       <Route path="/admin" component={AdminPage} />
       <Route component={NotFound} />
     </Switch>

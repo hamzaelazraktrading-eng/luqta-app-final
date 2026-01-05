@@ -28,15 +28,15 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-slate-100 flex font-tajawal" dir="rtl">
-      {/* Sidebar */}
-      <aside className="w-72 bg-slate-900 text-white p-8 hidden lg:flex flex-col shadow-2xl relative overflow-hidden">
+      {/* Sidebar - تم تحسين التباين */}
+      <aside className="w-72 bg-[#0f172a] text-white p-8 hidden lg:flex flex-col shadow-2xl relative overflow-hidden">
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/5 rounded-full blur-3xl" />
-        
+
         <div className="mb-12 relative z-10">
-          <h2 className="text-3xl font-bold text-white tracking-tight">لُقطة <span className="text-orange-500">.</span></h2>
-          <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mt-2 font-bold text-slate-400">Admin Dashboard</p>
+          <h2 className="text-3xl font-bold text-white tracking-tight">لُقطة <span className="text-[#f97316]">.</span></h2>
+          <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mt-2 font-bold">لوحة التحكم</p>
         </div>
-        
+
         <nav className="space-y-3 flex-1 relative z-10">
           <button className="w-full flex items-center gap-4 px-5 py-4 bg-white/10 rounded-2xl text-white font-bold transition-all border border-white/5">
             <LayoutDashboard size={22} />
@@ -69,24 +69,25 @@ export default function AdminPage() {
             <h1 className="text-4xl font-bold text-slate-900 tracking-tight">لوحة الإدارة</h1>
             <p className="text-slate-500 mt-2 font-medium">تحكم كامل في محتوى وعروض المنصة</p>
           </div>
-          <div className="flex flex-col gap-4 w-full sm:w-auto">
+          {/* تحسين ترتيب الأزرار لتكون تحت بعضها في الجوال */}
+          <div className="flex flex-col gap-3 w-full sm:w-80">
             <Button 
               onClick={() => setShowForm(showForm === "notification" ? null : "notification")} 
-              className="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white font-bold h-14 px-8 rounded-2xl shadow-xl transition-all gap-2"
+              className="w-full bg-[#0f172a] hover:bg-slate-800 text-white font-bold h-12 rounded-xl shadow-lg transition-all gap-2"
             >
-              <Bell className="h-5 w-5" />
+              <Bell className="h-4 w-4" />
               إرسال إشعار
             </Button>
             <Button 
               onClick={() => setShowForm(showForm === "coupon" ? null : "coupon")} 
-              className="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white font-bold h-14 px-8 rounded-2xl shadow-xl transition-all gap-2"
+              className="w-full bg-[#0f172a] hover:bg-slate-800 text-white font-bold h-12 rounded-xl shadow-lg transition-all gap-2"
             >
-              <Ticket className="h-5 w-5" />
+              <Ticket className="h-4 w-4" />
               إضافة كوبون
             </Button>
             <Button 
               onClick={() => setShowForm(showForm === "offer" ? null : "offer")} 
-              className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white font-bold h-14 px-8 rounded-2xl shadow-xl shadow-orange-500/20 transition-all gap-2"
+              className="w-full bg-[#f97316] hover:bg-orange-600 text-white font-bold h-14 rounded-xl shadow-xl shadow-orange-500/20 transition-all gap-2"
             >
               <Plus className="h-5 w-5" />
               إضافة لُقطة جديدة
@@ -95,21 +96,20 @@ export default function AdminPage() {
         </header>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {stats.map((stat, i) => (
             <motion.div 
               key={i}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200 flex items-center gap-6 group hover:shadow-md transition-shadow"
+              className="bg-white p-6 rounded-[1.5rem] shadow-sm border border-slate-200 flex items-center gap-4 group hover:shadow-md transition-shadow"
             >
-              <div className="w-16 h-16 rounded-[1.25rem] bg-slate-50 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center group-hover:scale-110 transition-transform">
                 {stat.icon}
               </div>
               <div>
-                <p className="text-sm text-slate-400 font-bold mb-1">{stat.label}</p>
-                <p className="text-3xl font-bold text-slate-900">{stat.value}</p>
+                <p className="text-[10px] text-slate-400 font-bold mb-0.5">{stat.label}</p>
+                <p className="text-xl font-bold text-slate-900">{stat.value}</p>
               </div>
             </motion.div>
           ))}
@@ -118,17 +118,17 @@ export default function AdminPage() {
         <AnimatePresence>
           {showForm && (
             <motion.div 
-              initial={{ opacity: 0, height: 0, y: -20 }}
-              animate={{ opacity: 1, height: "auto", y: 0 }}
-              exit={{ opacity: 0, height: 0, y: -20 }}
-              className="mb-12 overflow-hidden"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="mb-12"
             >
-              <div className="bg-white p-10 rounded-[2.5rem] shadow-xl border border-slate-200">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold text-slate-900">
+              <div className="bg-white p-6 md:p-10 rounded-[2rem] shadow-xl border border-slate-200">
+                <div className="flex justify-between items-center mb-8">
+                  <h2 className="text-xl font-bold text-slate-900">
                     {showForm === "offer" ? "إضافة عرض جديد" : showForm === "coupon" ? "إضافة كوبون جديد" : "إرسال إشعار للمستخدمين"}
                   </h2>
-                  <Button variant="ghost" onClick={() => setShowForm(null)} className="text-slate-400">إغلاق</Button>
+                  <Button variant="ghost" onClick={() => setShowForm(null)} className="text-slate-400 hover:text-red-500">إغلاق</Button>
                 </div>
                 {showForm === "offer" ? (
                   <OfferForm onSuccess={() => setShowForm(null)} />
@@ -142,10 +142,11 @@ export default function AdminPage() {
           )}
         </AnimatePresence>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+        {/* قائمة العروض */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {isLoading ? (
             <div className="col-span-full flex justify-center py-20">
-              <Loader2 className="animate-spin text-slate-900 h-12 w-12" />
+              <Loader2 className="animate-spin text-slate-900 h-10 w-10" />
             </div>
           ) : (
             offers?.map(offer => (
@@ -163,6 +164,7 @@ export default function AdminPage() {
   );
 }
 
+// نموذج الإشعارات مع إصلاح مشكلة تباين الألوان واللصق
 function NotificationForm({ onSuccess }: { onSuccess: () => void }) {
   const { toast } = useToast();
   const mutation = useMutation({
@@ -188,15 +190,25 @@ function NotificationForm({ onSuccess }: { onSuccess: () => void }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
-        <label className="text-slate-900 font-bold">العنوان</label>
-        <Input name="title" required className="bg-slate-50 border-slate-200 h-12 rounded-xl text-slate-900" />
+        <label className="text-slate-700 font-bold text-sm">عنوان الإشعار</label>
+        <Input 
+          name="title" 
+          required 
+          className="bg-slate-50 border-slate-200 h-12 rounded-xl text-slate-900 focus:bg-white transition-colors" 
+          placeholder="مثال: خصم جديد رائع!"
+        />
       </div>
       <div className="space-y-2">
-        <label className="text-slate-900 font-bold">الرسالة</label>
-        <Textarea name="message" required className="bg-slate-50 border-slate-200 min-h-[100px] rounded-xl text-slate-900" />
+        <label className="text-slate-700 font-bold text-sm">محتوى الإشعار</label>
+        <Textarea 
+          name="message" 
+          required 
+          className="bg-slate-50 border-slate-200 min-h-[100px] rounded-xl text-slate-900 focus:bg-white transition-colors" 
+          placeholder="اكتب تفاصيل الإشعار هنا..."
+        />
       </div>
-      <Button type="submit" className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold" disabled={mutation.isPending}>
-        {mutation.isPending ? <Loader2 className="animate-spin" /> : "إرسال الإشعار"}
+      <Button type="submit" className="w-full h-12 bg-[#0f172a] hover:bg-slate-800 text-white rounded-xl font-bold shadow-lg" disabled={mutation.isPending}>
+        {mutation.isPending ? <Loader2 className="animate-spin" /> : "إرسال الإشعار الآن"}
       </Button>
     </form>
   );

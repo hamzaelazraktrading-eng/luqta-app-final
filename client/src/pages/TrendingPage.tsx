@@ -1,7 +1,6 @@
 import { useOffers } from "@/hooks/use-offers";
 import { OfferCard } from "@/components/OfferCard";
 import { Flame, Loader2, ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
 import { BottomNav, AdBanner } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { useLocation } from "wouter";
@@ -28,25 +27,25 @@ export default function TrendingPage() {
             <Flame className="text-[#f97316]" size={28} />
             <h1 className="text-2xl font-bold">رائج الآن</h1>
           </div>
-          <p className="text-white/40 text-xs font-medium">أكثر العروض مشاهدة وطلباً في الساعات الأخيرة</p>
+          <p className="text-white/40 text-xs font-medium">أكثر العروض مشاهدة وطلباً</p>
         </div>
       </header>
 
-      <main className="p-4 pt-8 max-w-screen-xl mx-auto">
+      <main className="p-4 pt-8 max-w-screen-xl mx-auto min-h-[50vh]">
         <AdBanner type="hero" />
         {isLoading ? (
           <div className="flex justify-center py-20"><Loader2 className="h-10 w-10 animate-spin text-[#f97316]" /></div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {trendingOffers?.map((offer) => <OfferCard key={offer.id} offer={offer} />)}
           </div>
         )}
       </main>
 
-      <div className="mt-8">
-        <AdBanner type="footer" />
-        <Footer />
+      <div className="flex flex-col mt-10">
+        <div className="px-6 mb-4"><AdBanner type="footer" /></div>
         <BottomNav />
+        <Footer />
       </div>
     </div>
   );

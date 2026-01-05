@@ -22,7 +22,7 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 font-tajawal" dir="rtl">
+    <div className="min-h-screen bg-slate-100 text-slate-900 font-tajawal pb-20" dir="rtl">
       <header className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-2xl text-white border-b border-white/5 shadow-2xl">
         <div className="px-6 py-3 flex justify-between items-center h-16">
           <h1 className="text-3xl font-black text-orange-500 tracking-tighter">لُقطة</h1>
@@ -54,8 +54,9 @@ export default function HomePage() {
       </header>
 
       <main className="max-w-screen-xl mx-auto px-4 pt-8">
+        {/* إعلان هيرو العلوي - يتحرك مع الصفحة بشكل طبيعي */}
         <AdBanner type="hero" />
-        
+
         <div className="mt-10 mb-6 flex justify-between items-end px-2">
           <div>
             <h2 className="text-3xl font-black text-slate-900">أحدث اللُقطات</h2>
@@ -74,19 +75,20 @@ export default function HomePage() {
             {offers?.map((offer) => <OfferCard key={offer.id} offer={offer} />)}
           </motion.div>
         )}
+
+        {/* إضافة الإعلان السفلي هنا ليكون فوق الفوتر مباشرة وليس مثبتاً يحجب الرؤية */}
+        <div className="mt-12">
+           <AdBanner type="footer" />
+        </div>
       </main>
 
+      {/* الفوتر يظهر في نهاية الصفحة */}
       <div className="mt-20">
         <Footer />
       </div>
 
-      <div className="fixed bottom-24 left-0 right-0 z-[90] px-4 pointer-events-none">
-        <div className="max-w-screen-md mx-auto pointer-events-auto">
-          <AdBanner type="hero" />
-        </div>
-      </div>
-      
-      <div className="fixed bottom-0 left-0 right-0 z-[100]">
+      {/* شريط القوائم السفلي مثبت في أسفل الشاشة تماماً */}
+      <div className="fixed bottom-0 left-0 right-0 z-[100] bg-white border-t border-slate-100">
         <BottomNav />
       </div>
 
@@ -111,7 +113,8 @@ function BackToTop() {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.5 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-40 left-6 z-[120] w-14 h-14 bg-orange-500 text-white rounded-full shadow-2xl flex items-center justify-center hover:bg-orange-600 transition-all active:scale-90"
+          // تم رفع الزر قليلاً ليكون فوق شريط القوائم
+          className="fixed bottom-24 left-6 z-[120] w-14 h-14 bg-orange-500 text-white rounded-full shadow-2xl flex items-center justify-center hover:bg-orange-600 transition-all active:scale-90"
         >
           <ArrowRight className="-rotate-90" size={28} />
         </motion.button>

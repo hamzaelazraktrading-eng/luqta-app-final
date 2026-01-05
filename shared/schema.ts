@@ -2,6 +2,7 @@ import { pgTable, text, serial, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+// ... (جدول العروض يبقى كما هو)
 export const offers = pgTable("offers", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
@@ -39,7 +40,10 @@ export const insertOfferSchema = createInsertSchema(offers).omit({
   createdAt: true,
 });
 
-export const insertCouponSchema = createInsertSchema(coupons).omit({
+// تعديل Schema الكوبون لضمان قبول التاريخ القادم من الفورم
+export const insertCouponSchema = createInsertSchema(coupons, {
+  expiryDate: z.string().or(z.date()).transform((val) => new Date(val)),
+}).omit({
   id: true,
 });
 
