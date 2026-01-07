@@ -3,9 +3,10 @@ import { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   appId: 'com.luqta.deals',
   appName: 'لُقطة',
-  webDir: 'dist',
+  webDir: 'dist/public',
   server: {
-    androidScheme: 'https'
+    androidScheme: 'https',
+    allowNavigation: ['*.replit.dev']
   }
 };
 
