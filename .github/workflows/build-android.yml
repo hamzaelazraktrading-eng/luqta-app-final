@@ -1,46 +1,48 @@
-name: Final Universal Build
+name: Ultimate APK Builder
 on: workflow_dispatch
 
 jobs:
-  android-build:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install Dependencies
-        run: npm install --legacy-peer-deps
-
-      - name: Build Web Project
+      - name: Install All Dependencies
         run: |
-          # بناء المشروع مع تجاهل تحذيرات TypeScript في الواجهة
+          npm install --legacy-peer-deps
+          # تثبيت تعريفات اللغة الناقصة التي سببت الخطأ الأخير
+          npm install --save-dev @types/node 
+
+      - name: Build Web
+        run: |
+          # بناء المشروع وتجاهل أخطاء التنسيق
           npx vite build --root client --emptyOutDir || true
 
-      - name: Setup Java
+      - name: Setup Java & Android
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Prepare Android
+      - name: Capacitor Sync
         run: |
           npx cap add android || true
-          # إجبار النسخ من مجلد dist الجديد
-          npx cap copy android
+          # إجبار النظام على رؤية المجلد الصحيح
           npx cap sync android
 
-      - name: Build APK
+      - name: Final Build
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug -x lint
 
-      - name: Upload APK
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: luqta-universal-app
+          name: luqta-app-final
           path: android/app/build/outputs/apk/debug/app-debug.apk
