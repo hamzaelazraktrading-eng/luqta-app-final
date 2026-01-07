@@ -1,13 +1,12 @@
-name: Final Android Build
+name: Final Universal Build
 on: workflow_dispatch
 
 jobs:
   android-build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Source
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
+      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -16,9 +15,11 @@ jobs:
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Build Web Assets
+      - name: Build Web Project
         run: |
           npm run build
+          # فحص هل المجلد موجود أم لا (للتأكد)
+          ls -R client/dist
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -26,24 +27,22 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Force Android Project Creation
+      - name: Prepare Android
         run: |
-          # مسح أي مخلفات قديمة لبدء بناء نظيف
-          rm -rf android 
+          rm -rf android
           npx cap add android
-          # نسخ ملفات الويب يدوياً للتأكد من وجودها
-          cp -r dist/public/* android/app/src/main/assets/public/ || true
+          npx cap copy android
           npx cap sync android
 
-      - name: Build APK for All Devices
+      - name: Build APK
         run: |
           cd android
-          chmod +x gradlew
-          # هذا الأمر يجمع كل لغات المعالجات لضمان التثبيت على أي هاتف
-          ./gradlew assembleDebug --stacktrace
+          # تنظيف البناء القديم تماماً
+          ./gradlew clean
+          ./gradlew assembleDebug
 
-      - name: Upload Result
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: luqta-universal-app
+          name: luqta-fixed
           path: android/app/build/outputs/apk/debug/app-debug.apk
