@@ -3,10 +3,9 @@ import { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   appId: 'com.luqta.deals',
   appName: 'لُقطة',
-  webDir: 'dist/public',
+  webDir: 'client/dist', // هذا هو المسار الصحيح الذي ينتجه Vite
   server: {
-    androidScheme: 'https',
-    allowNavigation: ['*.replit.dev']
+    androidScheme: 'https'
   }
 };
 
