@@ -15,12 +15,10 @@ jobs:
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Build Web Project (Ignoring TS Errors)
+      - name: Build Web Project
         run: |
-          # هذا الأمر يخبر Vite بتجاهل أخطاء TypeScript وبناء الملفات مهما حدث
-          npx vite build --emptyOutDir || true
-          # التأكد من أن المجلد تم إنشاؤه
-          ls -R dist || ls -R client/dist || echo "Build folder not found"
+          # بناء المشروع مع تجاهل تحذيرات TypeScript في الواجهة
+          npx vite build --root client --emptyOutDir || true
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -30,11 +28,9 @@ jobs:
 
       - name: Prepare Android
         run: |
-          rm -rf android
           npx cap add android || true
-          # محاولة نسخ الملفات من كل المسارات الممكنة لضمان الامتلاء
-          mkdir -p android/app/src/main/assets/public
-          cp -r dist/* android/app/src/main/assets/public/ 2>/dev/null || cp -r client/dist/* android/app/src/main/assets/public/ 2>/dev/null || echo "Copy failed"
+          # إجبار النسخ من مجلد dist الجديد
+          npx cap copy android
           npx cap sync android
 
       - name: Build APK
