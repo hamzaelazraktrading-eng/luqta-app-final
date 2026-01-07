@@ -1,6 +1,6 @@
 name: Build Android APK
 on:
-  workflow_dispatch: # يسمح لك بتشغيل البناء يدوياً بضغطة زر
+  workflow_dispatch:
 
 jobs:
   build:
@@ -20,8 +20,9 @@ jobs:
       - name: Build Web Project
         run: npm run build
 
-      - name: Capacitor Sync
+      - name: Create Android Folder
         run: |
+          npx cap add android
           npx cap sync
           
       - name: Build Android Debug
