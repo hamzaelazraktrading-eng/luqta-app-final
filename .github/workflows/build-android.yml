@@ -17,12 +17,8 @@ jobs:
         run: npm install --legacy-peer-deps
 
       - name: Build Web Assets
-        run: npm run build
-
-      - name: Add Android Platform
         run: |
-          npx cap add android || true
-          npx cap sync android
+          npm run build
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -30,14 +26,24 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Build APK
+      - name: Force Android Project Creation
+        run: |
+          # مسح أي مخلفات قديمة لبدء بناء نظيف
+          rm -rf android 
+          npx cap add android
+          # نسخ ملفات الويب يدوياً للتأكد من وجودها
+          cp -r dist/public/* android/app/src/main/assets/public/ || true
+          npx cap sync android
+
+      - name: Build APK for All Devices
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug
+          # هذا الأمر يجمع كل لغات المعالجات لضمان التثبيت على أي هاتف
+          ./gradlew assembleDebug --stacktrace
 
       - name: Upload Result
         uses: actions/upload-artifact@v4
         with:
-          name: my-app-bundle
+          name: luqta-universal-app
           path: android/app/build/outputs/apk/debug/app-debug.apk
